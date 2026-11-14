@@ -11,11 +11,11 @@
 
 ## 1. Ringkasan Produk
 
-Lespri adalah aplikasi Android ringan untuk membantu pemilik/pengelola bimbel rumahan mengelola administrasi operasional harian: siswa, tutor, kelas, jadwal, kehadiran, tagihan, pembayaran, dan pengingat.
+**Lespri** adalah aplikasi Android ringan untuk membantu pemilik/pengelola bimbel rumahan mengelola administrasi operasional harian: siswa, tutor, kelas, jadwal, kehadiran, tagihan, pembayaran, dan pelaporan ringkas.
 
-Lespri ditujukan untuk bimbel kecil yang sudah berjalan dan kemungkinan memiliki data siswa di buku, Excel, atau CSV. Produk harus membuat pengelola bisa mulai menggunakan aplikasi tanpa harus membuat akun, memindahkan seluruh data secara manual, atau mempelajari sistem administrasi yang kompleks.
+Lespri ditujukan untuk bimbel kecil yang sudah berjalan dan kemungkinan memiliki data siswa di buku, Excel, atau CSV. Produk harus membuat pengelola bisa mulai menggunakan aplikasi tanpa harus memindahkan semua proses ke sistem baru atau membangun infrastruktur backend.
 
-Lespri bukan LMS, marketplace tutor, atau software ERP sekolah. Fokus utamanya adalah administrasi bimbel yang cepat, mudah dipindai, dan tetap berjalan tanpa internet.
+Lespri bukan LMS, marketplace tutor, atau software ERP sekolah. Fokus utamanya adalah **administrasi bimbel yang cepat, mudah dipindai, dan tetap berjalan tanpa internet**.
 
 ### 1.1 Positioning
 
@@ -23,12 +23,12 @@ Lespri bukan LMS, marketplace tutor, atau software ERP sekolah. Fokus utamanya a
 
 ### 1.2 Nilai utama
 
-- Langsung ke masalah utama: pengelola dapat melihat jadwal hari ini, kehadiran, dan pembayaran yang perlu ditindaklanjuti.
-- Mudah dipahami sejak pertama dibuka: navigasi jelas, istilah sederhana, dan alur kerja pendek.
-- Tidak memaksa migrasi besar: data awal dapat diimpor dari CSV; file Excel dapat dikonversi ke CSV.
-- Offline-first: data dan fungsi operasional inti tetap tersedia tanpa koneksi internet.
-- Kontrol tetap di tangan pengguna: pengingat muncul sebagai notifikasi lokal; pengguna sendiri yang memutuskan apakah akan membagikan pesan ke orang tua/siswa.
-- Data portabel: pengguna dapat mengekspor data dan membuat backup penuh kapan saja.
+1. **Langsung ke masalah utama:** pengelola dapat melihat jadwal hari ini, kehadiran, dan pembayaran yang perlu ditindaklanjuti.
+2. **Mudah dipahami sejak pertama dibuka:** navigasi jelas, istilah sederhana, dan alur kerja pendek.
+3. **Tidak memaksa migrasi besar:** data awal dapat diimpor dari CSV; file Excel dapat dikonversi ke CSV.
+4. **Offline-first:** data dan fungsi operasional inti tetap tersedia tanpa koneksi internet.
+5. **Kontrol tetap di tangan pengguna:** pengingat muncul sebagai notifikasi lokal; pengguna sendiri yang memutuskan apakah akan membagikan pesan ke orang tua/siswa.
+6. **Data portabel:** pengguna dapat mengekspor data dan membuat backup penuh kapan saja.
 
 ---
 
@@ -46,8 +46,10 @@ Lespri bukan LMS, marketplace tutor, atau software ERP sekolah. Fokus utamanya a
 
 ### 2.2 Indikator keberhasilan produk
 
+Target berikut adalah **target validasi awal**, bukan klaim performa yang sudah terbukti.
+
 | Metrik | Definisi | Target validasi awal |
-|---|---|---|
+|---|---|---:|
 | Time to first student | Waktu dari aplikasi dibuka pertama kali sampai satu siswa tersimpan | ≤ 3 menit |
 | Setup completion | Pengguna berhasil menyelesaikan setup awal dan membuat/mengimpor data | ≥ 70% pengguna uji |
 | First-week activation | Pengguna membuat minimal satu kelas/jadwal dan mencatat kehadiran dalam 7 hari | ≥ 60% pengguna uji |
@@ -84,7 +86,7 @@ Lespri bukan LMS, marketplace tutor, atau software ERP sekolah. Fokus utamanya a
 
 ### 3.2 Peran pengguna MVP
 
-Hanya satu peran aplikasi: Owner/Admin.
+**Hanya satu peran aplikasi: Owner/Admin.**
 
 Owner dapat membuat dan mengelola beberapa data tutor, tetapi tutor belum memiliki akun atau akses login sendiri. Seluruh perubahan data dilakukan dari satu instalasi/perangkat yang digunakan pemilik.
 
@@ -125,7 +127,7 @@ Owner dapat membuat dan mengelola beberapa data tutor, tetapi tutor belum memili
 
 ### 5.1 Arah desain
 
-Gunakan prinsip wide but clean yang disukai dari TutorDesk:
+Gunakan prinsip **wide but clean** yang disukai dari TutorDesk:
 
 - Maksimalkan lebar konten yang tersedia; hindari card besar yang hanya menampilkan sedikit informasi.
 - Informasi penting dapat dipindai dengan cepat: nama, kelas, jadwal, status kehadiran, dan status pembayaran.
@@ -146,15 +148,19 @@ Gunakan prinsip wide but clean yang disukai dari TutorDesk:
 
 ### 5.3 Navigasi utama
 
-Rekomendasi navigasi utama:
+Keputusan struktur navigasi MVP:
 
-- Dashboard — ringkasan dan tindakan hari ini.
-- Siswa — daftar siswa, profil, dan enrollment.
-- Jadwal — kalender/list jadwal, kelas, dan kehadiran.
-- Keuangan — tagihan, pembayaran, dan tunggakan.
-- Lainnya — tutor, laporan, impor/ekspor, pengaturan.
+**Bottom navigation pada ponsel:**
 
-Pada layar lebar/tablet, navigasi dapat berubah menjadi navigation rail atau side navigation. Pada ponsel, gunakan bottom navigation atau pola navigasi Android yang sesuai.
+1. **Beranda** — dashboard dan tindakan hari ini.
+2. **Siswa** — daftar, profil, dan enrollment siswa.
+3. **Kelas** — kelas privat/kelompok, siswa, tutor, dan jadwal terkait.
+4. **Jadwal** — agenda, sesi, dan kehadiran.
+5. **Keuangan** — tagihan, pembayaran, paket sesi, dan tunggakan.
+
+**Hamburger drawer untuk menu sekunder:** Tutor, Laporan, Impor CSV, Ekspor Data, Backup & Restore, dan Pengaturan.
+
+Pada tablet/layar lebar, side navigation atau navigation rail menggantikan bottom navigation; keduanya tidak ditampilkan bersamaan. Detail lengkap halaman, menu, komponen bar, dan user journey ada di dokumen pendukung terkait.
 
 ### 5.4 Komponen visual utama
 
@@ -171,9 +177,9 @@ Pada layar lebar/tablet, navigasi dapat berubah menjadi navigation rail atau sid
 
 Prioritas:
 
-- P0 — Wajib MVP: tidak boleh dihilangkan dari rilis awal.
-- P1 — Penting: masuk MVP bila kapasitas implementasi memungkinkan; jika tidak, rilis minor berikutnya.
-- Later — Setelah MVP: bukan bagian dari acceptance criteria rilis pertama.
+- **P0 — Wajib MVP:** tidak boleh dihilangkan dari rilis awal.
+- **P1 — Penting:** masuk MVP bila kapasitas implementasi memungkinkan; jika tidak, rilis minor berikutnya.
+- **Later — Setelah MVP:** bukan bagian dari acceptance criteria rilis pertama.
 
 ### 6.1 Ringkasan prioritas
 
@@ -225,7 +231,7 @@ Kebutuhan:
 - Aplikasi menjelaskan bahwa data utama disimpan di perangkat dan menyarankan backup berkala.
 - Bahasa awal mengikuti bahasa perangkat jika tersedia; pengguna dapat mengubahnya di Pengaturan.
 
-Acceptance criteria:
+**Acceptance criteria:**
 
 - Tidak ada login/register wajib untuk membuat siswa, kelas, jadwal, kehadiran, atau transaksi.
 - Setelah force close dan membuka ulang aplikasi, data lokal tetap tersedia.
@@ -254,7 +260,7 @@ Kebutuhan:
 - Profil siswa menampilkan ringkasan kelas, jadwal, kehadiran, tagihan, pembayaran, dan paket sesi yang aktif.
 - Mengarsipkan siswa tidak menghapus riwayat lama.
 
-Acceptance criteria:
+**Acceptance criteria:**
 
 - Nama wajib divalidasi.
 - Nomor telepon disimpan sebagai teks, bukan angka, agar angka nol di depan tidak hilang.
@@ -280,7 +286,7 @@ Kebutuhan:
 - Tutor nonaktif tidak dapat dipilih untuk kelas baru, tetapi riwayat penugasan tetap disimpan.
 - Tidak ada akun/login tutor pada MVP.
 
-Acceptance criteria:
+**Acceptance criteria:**
 
 - Satu kelas dapat memiliki satu tutor utama pada MVP.
 - Mengarsipkan tutor tidak menghapus sesi atau riwayat kelas sebelumnya.
@@ -291,8 +297,8 @@ Acceptance criteria:
 
 Jenis kelas:
 
-- Privat: satu siswa per enrollment/kelas.
-- Kelompok: beberapa siswa dalam satu kelas.
+- **Privat:** satu siswa per enrollment/kelas.
+- **Kelompok:** beberapa siswa dalam satu kelas.
 
 Data kelas minimal:
 
@@ -312,7 +318,7 @@ Kebutuhan:
 - Kelas kelompok dapat memiliki banyak siswa.
 - Satu siswa dapat terdaftar di lebih dari satu kelas.
 
-Acceptance criteria:
+**Acceptance criteria:**
 
 - Sistem mencegah enrollment siswa yang sama terduplikasi pada kelas yang sama dan periode aktif yang sama.
 - Mengarsipkan kelas tidak menghapus jadwal, attendance, atau transaksi historis.
@@ -338,7 +344,7 @@ Aturan jadwal berulang:
 - Pengguna harus dapat mengubah satu sesi saja tanpa mengubah seluruh jadwal rutin.
 - Sesi yang sudah memiliki attendance/transaksi tidak boleh dihapus permanen melalui edit jadwal biasa.
 
-Acceptance criteria:
+**Acceptance criteria:**
 
 - Pengguna dapat membuka daftar sesi hari ini dan mengetahui tutor serta kelas yang terkait.
 - Pengguna dapat membatalkan satu sesi tanpa menghapus pola jadwal mingguan.
@@ -371,7 +377,7 @@ Aturan awal:
 - Untuk skema per sesi, status Hadir menjadi dasar pembuatan biaya default.
 - Status selain Hadir tidak otomatis mengurangi saldo paket atau membuat biaya per sesi. Pengguna dapat melakukan penyesuaian manual pada transaksi bila perjanjian dengan orang tua mengharuskannya.
 
-Acceptance criteria:
+**Acceptance criteria:**
 
 - Mencatat attendance untuk kelas kelompok tidak memerlukan membuka profil setiap siswa satu per satu.
 - Mengubah attendance memperbarui perhitungan paket/per sesi sesuai aturan dan menampilkan perubahan sebelum disimpan jika berdampak pada tagihan.
@@ -383,9 +389,9 @@ Acceptance criteria:
 
 Setiap enrollment dapat menggunakan salah satu skema pembayaran berikut:
 
-- Bulanan: biaya tetap per periode/bulan.
-- Paket sesi: siswa membeli sejumlah sesi di muka.
-- Per sesi: biaya dikenakan berdasarkan sesi yang memenuhi aturan penagihan.
+1. **Bulanan:** biaya tetap per periode/bulan.
+2. **Paket sesi:** siswa membeli sejumlah sesi di muka.
+3. **Per sesi:** biaya dikenakan berdasarkan sesi yang memenuhi aturan penagihan.
 
 Skema dapat berbeda antar siswa, bahkan dalam kelas yang sama bila memang ada kesepakatan berbeda.
 
@@ -421,13 +427,7 @@ Data transaksi minimal:
 - Tanggal dibuat.
 - Tanggal jatuh tempo (opsional sesuai skema).
 - Status: Draft, Belum lunas, Dibayar sebagian, Lunas, Dibatalkan.
-
-Riwayat pembayaran:
-
-- nominal
-- tanggal
-- metode
-- catatan/referensi opsional
+- Riwayat pembayaran: nominal, tanggal, metode, dan catatan/referensi opsional.
 
 Metode pembayaran MVP:
 
@@ -444,7 +444,7 @@ Kebutuhan:
 - Tidak ada verifikasi transfer otomatis atau payment gateway.
 - Tagihan yang lunas tidak berubah menjadi belum lunas tanpa penyesuaian yang tercatat.
 
-Acceptance criteria:
+**Acceptance criteria:**
 
 - Saldo tagihan = total tagihan dikurangi total pembayaran yang valid.
 - Status Lunas hanya jika saldo tagihan nol atau kurang.
@@ -460,13 +460,13 @@ Dashboard harus memprioritaskan apa yang perlu dilakukan pemilik, bukan hanya me
 
 Komponen utama:
 
-- Tunggakan saat ini: total nilai tagihan belum lunas.
-- Siswa belum lunas: jumlah siswa dengan saldo tagihan.
-- Tagihan jatuh tempo/terlambat: jumlah dan nominal.
-- Jadwal hari ini: sesi, jam, kelas, dan tutor.
-- Kehadiran belum dicatat: sesi selesai/terlewat yang attendance-nya belum lengkap.
-- Paket hampir habis: jumlah siswa dengan saldo sesi rendah/habis.
-- Pemasukan bulan ini: total pembayaran yang diterima pada bulan berjalan.
+1. **Tunggakan saat ini:** total nilai tagihan belum lunas.
+2. **Siswa belum lunas:** jumlah siswa dengan saldo tagihan.
+3. **Tagihan jatuh tempo/terlambat:** jumlah dan nominal.
+4. **Jadwal hari ini:** sesi, jam, kelas, dan tutor.
+5. **Kehadiran belum dicatat:** sesi selesai/terlewat yang attendance-nya belum lengkap.
+6. **Paket hampir habis:** jumlah siswa dengan saldo sesi rendah/habis.
+7. **Pemasukan bulan ini:** total pembayaran yang diterima pada bulan berjalan.
 
 Aksi cepat:
 
@@ -533,7 +533,7 @@ Template minimal:
 - Pemberitahuan jadwal berubah/dibatalkan.
 - Ringkasan kehadiran/perkembangan yang aman untuk dibagikan.
 
-Story visual (P1):
+**Story visual (P1):**
 
 - Template vertikal 9:16 untuk promosi bimbel atau pengumuman umum.
 - Data pribadi siswa tidak dimasukkan secara default.
@@ -546,7 +546,7 @@ Story visual (P1):
 
 Import ditujukan untuk bimbel yang sudah memiliki data siswa di Excel/Google Sheets/CSV.
 
-Keputusan implementasi hemat ukuran aplikasi: MVP tidak membaca file `.xlsx` secara langsung. Pengguna membuka file Excel lalu memilih Save As / Download as CSV UTF-8, kemudian mengimpor file CSV tersebut ke Lespri.
+**Keputusan implementasi hemat ukuran aplikasi:** MVP tidak membaca file `.xlsx` secara langsung. Pengguna membuka file Excel lalu memilih **Save As / Download as CSV UTF-8**, kemudian mengimpor file CSV ke aplikasi.
 
 Alasan:
 
@@ -564,33 +564,33 @@ Jenis data yang diprioritaskan untuk import:
 
 MVP dapat menggunakan satu template CSV gabungan dengan satu baris per enrollment. Field inti yang disarankan:
 
-`student_name` (wajib)  
-`guardian_name`  
-`guardian_phone`  
-`school_grade`  
-`class_name`  
-`class_type` (`private` / `group`)  
-`subject`  
-`tutor_name`  
-`schedule_day`  
-`schedule_start_time`  
-`schedule_duration_minutes`  
-`billing_type` (`monthly` / `package` / `per_session`)  
-`fee_amount`  
-`package_session_count`  
-`due_day`
+- `student_name` (wajib)
+- `guardian_name`
+- `guardian_phone`
+- `school_grade`
+- `class_name`
+- `class_type` (`private` / `group`)
+- `subject`
+- `tutor_name`
+- `schedule_day`
+- `schedule_start_time`
+- `schedule_duration_minutes`
+- `billing_type` (`monthly` / `package` / `per_session`)
+- `fee_amount`
+- `package_session_count`
+- `due_day`
 
 Ketentuan import:
 
-- Pengguna memilih file CSV dari perangkat.
-- Sistem membaca header dan menawarkan mapping kolom.
-- Sistem menyediakan preview beberapa baris sebelum import.
-- Sistem memvalidasi field wajib, tipe data, nomor telepon, tanggal/jam, dan nominal.
-- Sistem mendeteksi kemungkinan duplikat berdasarkan kombinasi data yang masuk akal; jangan menggabungkan otomatis tanpa konfirmasi.
-- Pengguna melihat jumlah baris valid, baris bermasalah, dan kandidat duplikat.
-- Pengguna dapat memilih lanjut hanya dengan baris valid atau membatalkan seluruh import.
-- Hasil import menampilkan jumlah record berhasil, dilewati, dan gagal.
-- Import tidak boleh menghapus data yang sudah ada.
+1. Pengguna memilih file CSV dari perangkat.
+2. Sistem membaca header dan menawarkan mapping kolom.
+3. Sistem menyediakan preview beberapa baris sebelum import.
+4. Sistem memvalidasi field wajib, tipe data, nomor telepon, tanggal/jam, dan nominal.
+5. Sistem mendeteksi kemungkinan duplikat berdasarkan kombinasi data yang masuk akal; jangan menggabungkan otomatis tanpa konfirmasi.
+6. Pengguna melihat jumlah baris valid, baris bermasalah, dan kandidat duplikat.
+7. Pengguna dapat memilih lanjut hanya dengan baris valid atau membatalkan seluruh import.
+8. Hasil import menampilkan jumlah record berhasil, dilewati, dan gagal.
+9. Import tidak boleh menghapus data yang sudah ada.
 
 Format CSV:
 
@@ -600,7 +600,7 @@ Format CSV:
 - Nomor telepon diperlakukan sebagai teks.
 - Pesan error harus menyebut nomor baris dan kolom.
 
-Acceptance criteria:
+**Acceptance criteria:**
 
 - Pengguna dapat mengimpor CSV dari file manager tanpa koneksi internet.
 - Pengguna dapat memetakan header CSV yang berbeda ke field Lespri.
@@ -633,14 +633,14 @@ Acceptance criteria:
 - Pengguna memilih file backup.
 - Sistem memvalidasi format, versi, dan integritas file sebelum mengubah database.
 - Tampilkan ringkasan isi backup sebelum konfirmasi.
-- MVP menggunakan pola replace local data agar relasi konsisten dan implementasi sederhana; tampilkan peringatan tegas bahwa data lokal saat ini akan diganti.
+- MVP menggunakan pola **replace local data** agar relasi konsisten dan implementasi sederhana; tampilkan peringatan tegas bahwa data lokal saat ini akan diganti.
 - Sebelum restore, buat snapshot lokal sementara sebagai mekanisme pemulihan dari kegagalan proses.
 - Restore harus bersifat transaksional: jika gagal, database lama tetap utuh.
 - Setelah restore berhasil, jadwalkan ulang notifikasi lokal.
 
-Catatan batasan: CSV digunakan untuk pertukaran dataset; JSON digunakan untuk backup penuh yang mempertahankan relasi. CSV bukan pengganti backup.
+**Catatan batasan:** CSV digunakan untuk pertukaran dataset; JSON digunakan untuk backup penuh yang mempertahankan relasi. CSV bukan pengganti backup.
 
-Acceptance criteria:
+**Acceptance criteria:**
 
 - Backup dan restore dapat dilakukan tanpa internet dan tanpa akun.
 - Backup dari versi aplikasi yang sama dapat dipulihkan 100% pada instalasi uji.
@@ -651,8 +651,7 @@ Acceptance criteria:
 
 **Prioritas:** P0
 
-Bahasa yang didukung: Bahasa Indonesia (`id`) dan English (`en`).
-
+- Bahasa yang didukung: Bahasa Indonesia (`id`) dan English (`en`).
 - Default mengikuti bahasa perangkat jika didukung; fallback Bahasa Indonesia.
 - Pengguna dapat mengganti bahasa di Pengaturan tanpa membuat ulang data.
 - Semua label, tombol, validasi, empty state, notifikasi lokal, dan pesan error harus dilokalisasi.
@@ -710,7 +709,7 @@ Strategi:
 7. Tambahkan jadwal.
 8. Dashboard menampilkan ringkasan yang relevan.
 
-Prinsip: jangan memaksa pengguna mengisi seluruh konfigurasi sebelum aplikasi dapat dipakai.
+**Prinsip:** jangan memaksa pengguna mengisi seluruh konfigurasi sebelum aplikasi dapat dipakai.
 
 ### Journey B — Pengguna pindah dari Excel
 
@@ -756,6 +755,8 @@ Prinsip: jangan memaksa pengguna mengisi seluruh konfigurasi sebelum aplikasi da
 ---
 
 ## 9. Struktur Layar
+
+Daftar ringkas berikut menjelaskan cakupan layar. Screen map pendamping `lespri-screen-map.md` menjadi acuan lebih rinci untuk inventaris halaman, akses menu, navigasi, komponen top/bottom/side bar, dan user journey.
 
 ### 9.1 Dashboard
 
@@ -833,19 +834,19 @@ Implementasi database dapat disesuaikan dengan stack teknis, tetapi relasi domai
 
 | Entitas | Fungsi | Field inti |
 |---|---|---|
-| `OwnerProfile` | Profil lokal bimbel | `id`, `business_name`, `created_at`, `updated_at` |
-| `Student` | Data siswa | `id`, `name`, `guardian_name`, `guardian_phone`, `school_grade`, `notes`, `status` |
-| `Tutor` | Data tutor | `id`, `name`, `phone`, `expertise`, `notes`, `status` |
-| `ClassGroup` | Kelas privat/kelompok | `id`, `name`, `class_type`, `subject`, `tutor_id`, `location_note`, `status` |
-| `Enrollment` | Relasi siswa-kelas dan skema tagihan | `id`, `student_id`, `class_id`, `billing_type`, `fee_amount`, `due_day`, `package_session_count`, `status` |
-| `ScheduleRule` | Pola jadwal berulang | `id`, `class_id`, `tutor_id`, `weekday`, `start_time`, `duration_minutes`, `effective_from`, `effective_until`, `status` |
-| `LessonSession` | Sesi spesifik pada tanggal/jam tertentu | `id`, `class_id`, `tutor_id`, `session_date`, `start_time`, `duration_minutes`, `status`, `source_rule_id` |
-| `AttendanceRecord` | Kehadiran siswa pada sesi | `id`, `session_id`, `enrollment_id`, `attendance_status`, `note`, `updated_at` |
-| `Charge` | Tagihan/biaya | `id`, `enrollment_id`, `charge_type`, `period_start`, `period_end`, `amount`, `due_date`, `status` |
-| `Payment` | Pembayaran terhadap tagihan | `id`, `charge_id`, `amount`, `paid_at`, `method`, `reference_note` |
-| `PackageLedger` | Perubahan saldo sesi paket | `id`, `enrollment_id`, `session_id`, `delta_sessions`, `reason`, `created_at` |
-| `NotificationPreference` | Pengaturan notifikasi lokal | `id`, `notification_type`, `enabled`, `lead_time` |
-| `AppSettings` | Preferensi aplikasi | `language`, `date_format`, `schema_version`, `other_settings` |
+| `OwnerProfile` | Profil lokal bimbel | id, business_name, created_at, updated_at |
+| `Student` | Data siswa | id, name, guardian_name, guardian_phone, school_grade, notes, status |
+| `Tutor` | Data tutor | id, name, phone, expertise, notes, status |
+| `ClassGroup` | Kelas privat/kelompok | id, name, class_type, subject, tutor_id, location_note, status |
+| `Enrollment` | Relasi siswa-kelas dan skema tagihan | id, student_id, class_id, billing_type, fee_amount, due_day, package_session_count, status |
+| `ScheduleRule` | Pola jadwal berulang | id, class_id, tutor_id, weekday, start_time, duration_minutes, effective_from, effective_until, status |
+| `LessonSession` | Sesi spesifik pada tanggal/jam tertentu | id, class_id, tutor_id, session_date, start_time, duration_minutes, status, source_rule_id |
+| `AttendanceRecord` | Kehadiran siswa pada sesi | id, session_id, enrollment_id, attendance_status, note, updated_at |
+| `Charge` | Tagihan/biaya | id, enrollment_id, charge_type, period_start, period_end, amount, due_date, status |
+| `Payment` | Pembayaran terhadap tagihan | id, charge_id, amount, paid_at, method, reference_note |
+| `PackageLedger` | Perubahan saldo sesi paket | id, enrollment_id, session_id, delta_sessions, reason, created_at |
+| `NotificationPreference` | Pengaturan notifikasi lokal | id, notification_type, enabled, lead_time |
+| `AppSettings` | Preferensi aplikasi | language, date_format, schema_version, other_settings |
 
 ### 10.2 Aturan model data
 
@@ -862,26 +863,26 @@ Implementasi database dapat disesuaikan dengan stack teknis, tetapi relasi domai
 
 ## 11. Business Rules dan Edge Cases
 
-- Satu siswa di beberapa kelas: diperbolehkan; skema pembayaran dapat berbeda per enrollment.
-- Satu kelas dengan beberapa siswa: hanya untuk kelas kelompok.
-- Kelas tanpa tutor: dapat disimpan sebagai draft, tetapi sistem memberi peringatan sebelum jadwal dibuat.
-- Tutor nonaktif: tetap terlihat dalam histori; tidak dapat dipilih untuk penugasan baru.
-- Siswa nonaktif: tidak muncul sebagai default pilihan enrollment baru; histori tetap tersedia.
-- Jadwal rutin diubah: hanya sesi mendatang yang belum diselesaikan yang mengikuti aturan perubahan; sesi historis tetap.
-- Sesi dibatalkan: tidak menghasilkan biaya per sesi dan tidak mengurangi saldo paket secara otomatis.
-- Attendance berubah dari Hadir: sistem membalikkan dampak paket/per sesi yang sebelumnya berasal dari attendance tersebut.
-- Pembayaran sebagian: sisa tagihan harus tetap terlihat dan dapat ditagih.
-- Pembayaran melebihi tagihan: MVP sebaiknya menolak nominal berlebih atau meminta pengguna mengonfirmasi sebagai saldo/kredit terpisah. Default yang direkomendasikan: tolak nominal yang melebihi saldo tagihan untuk menghindari saldo kredit yang kompleks.
-- Tagihan bulanan terbuat dua kali: sistem harus mendeteksi enrollment dan periode yang sama agar tidak membuat duplikat.
-- Paket sesi habis: tampilkan saldo nol dan CTA untuk mencatat pembelian paket baru.
-- Restore saat data sudah ada: wajib menampilkan peringatan bahwa data lokal akan diganti.
-- CSV dengan nomor telepon berawalan nol: harus tetap disimpan sebagai teks.
-- CSV memakai titik koma: importer harus mendeteksi delimiter atau memberi pilihan kepada pengguna.
-- Nama siswa sama: jangan otomatis menganggap duplikat; gunakan kombinasi nama, wali, nomor telepon, dan/atau pilihan pengguna.
-- Tidak ada internet: semua CRUD, jadwal, attendance, transaksi, export, backup, dan restore tetap berjalan.
-- Iklan gagal dimuat: tidak boleh menampilkan error blocking atau menghalangi layar.
-- Izin notifikasi ditolak: fitur lokal tetap dapat digunakan; pengaturan menunjukkan status izin sistem.
-- Perangkat ganti zona waktu: jadwal dan notifikasi harus dihitung ulang tanpa mengubah tanggal historis secara keliru.
+1. **Satu siswa di beberapa kelas:** diperbolehkan; skema pembayaran dapat berbeda per enrollment.
+2. **Satu kelas dengan beberapa siswa:** hanya untuk kelas kelompok.
+3. **Kelas tanpa tutor:** dapat disimpan sebagai draft, tetapi sistem memberi peringatan sebelum jadwal dibuat.
+4. **Tutor nonaktif:** tetap terlihat dalam histori; tidak dapat dipilih untuk penugasan baru.
+5. **Siswa nonaktif:** tidak muncul sebagai default pilihan enrollment baru; histori tetap tersedia.
+6. **Jadwal rutin diubah:** hanya sesi mendatang yang belum diselesaikan yang mengikuti aturan perubahan; sesi historis tetap.
+7. **Sesi dibatalkan:** tidak menghasilkan biaya per sesi dan tidak mengurangi saldo paket secara otomatis.
+8. **Attendance berubah dari Hadir:** sistem membalikkan dampak paket/per sesi yang sebelumnya berasal dari attendance tersebut.
+9. **Pembayaran sebagian:** sisa tagihan harus tetap terlihat dan dapat ditagih.
+10. **Pembayaran melebihi tagihan:** MVP sebaiknya menolak nominal berlebih atau meminta pengguna mengonfirmasi sebagai saldo/kredit terpisah. Default yang direkomendasikan: tolak nominal yang melebihi tagihan.
+11. **Tagihan bulanan terbuat dua kali:** sistem harus mendeteksi enrollment dan periode yang sama agar tidak membuat duplikat.
+12. **Paket sesi habis:** tampilkan saldo nol dan CTA untuk mencatat pembelian paket baru.
+13. **Restore saat data sudah ada:** wajib menampilkan peringatan bahwa data lokal akan diganti.
+14. **CSV dengan nomor telepon berawalan nol:** harus tetap disimpan sebagai teks.
+15. **CSV memakai titik koma:** importer harus mendeteksi delimiter atau memberi pilihan kepada pengguna.
+16. **Nama siswa sama:** jangan otomatis menganggap duplikat; gunakan kombinasi nama, wali, nomor telepon, dan/atau pilihan pengguna.
+17. **Tidak ada internet:** semua CRUD, jadwal, attendance, transaksi, export, backup, dan restore tetap berjalan.
+18. **Iklan gagal dimuat:** tidak boleh menampilkan error blocking atau menghalingi layar.
+19. **Izin notifikasi ditolak:** fitur lokal tetap dapat digunakan; pengaturan menunjukkan status izin sistem.
+20. **Perangkat ganti zona waktu:** jadwal dan notifikasi harus dihitung ulang tanpa mengubah tanggal historis secara keliru.
 
 ---
 
@@ -947,14 +948,14 @@ Lespri adalah aplikasi administrasi yang dipakai untuk tugas singkat dan berulan
 
 ### 13.2 Inventory yang mungkin diuji
 
-- Banner/adaptive banner
-- Native ads
-- Interstitial
-- Rewarded
-- App open
-- Rewarded interstitial
+- Banner/adaptive banner.
+- Native ads.
+- Interstitial.
+- Rewarded.
+- App open.
+- Rewarded interstitial.
 
-MVP memerlukan integrasi AdMob dan struktur konfigurasi yang memungkinkan lebih dari satu ad unit/placement, tetapi tidak mewajibkan semua format aktif pada rilis pertama.
+MVP memerlukan integrasi AdMob dan struktur konfigurasi yang memungkinkan lebih dari satu ad unit/placement, tetapi **tidak mewajibkan semua format aktif pada rilis pertama**.
 
 ### 13.3 Area yang dilarang untuk placement iklan
 
@@ -970,7 +971,7 @@ MVP memerlukan integrasi AdMob dan struktur konfigurasi yang memungkinkan lebih 
 
 - Mulai dari placement yang tidak mengganggu, misalnya adaptive banner pada area dashboard non-kritis.
 - Native dapat diuji pada konten informasional yang memiliki ruang dan pemisahan visual jelas.
-- Interstitial hanya boleh dipertimbangkan pada transisi natural dan tidak boleh muncul dengan frekuensi tinggi. Google menyarankan interstitial untuk titik jeda/transisi yang wajar dan memperingatkan pengalaman buruk bila iklan mengejutkan atau menghalangi pengguna.
+- Interstitial hanya boleh dipertimbangkan pada transisi natural dan tidak boleh muncul dengan frekuensi tinggi. Google menyarankan interstitial untuk titik jeda/transisi yang wajar dan memperingatkan agar tidak terlalu sering tampil.
 - Rewarded hanya masuk akal bila ada benefit opsional yang nyata; jangan membuat benefit artifisial.
 - App open bukan default karena banyak pengguna membuka aplikasi hanya untuk satu tugas singkat.
 
@@ -1130,22 +1131,22 @@ Nama field final menyesuaikan stack. Jangan menyimpan ID iklan di banyak screen.
 
 Hal-hal berikut belum perlu menghambat implementasi core MVP:
 
-- AdMob: format yang benar-benar diaktifkan, lokasi placement, dan frekuensi.
-- Apakah Story template masuk MVP pertama atau rilis minor berikutnya.
-- Apakah perlu PDF/image invoice setelah share teks divalidasi.
-- Apakah perlu opsi merge saat restore; MVP menggunakan replace untuk menyederhanakan konsistensi data.
-- Apakah perlu sinkronisasi cloud dan multi-user setelah kebutuhan pasar terbukti.
-- Apakah perlu skema honor tutor; jangan dibangun sebelum aturan pembayaran tutor tervalidasi.
-- Apakah perlu batas gratis atau paket Pro/IAP; tidak termasuk MVP.
+1. AdMob: format yang benar-benar diaktifkan, lokasi placement, dan frekuensi.
+2. Apakah Story template masuk MVP pertama atau rilis minor berikutnya.
+3. Apakah perlu PDF/image invoice setelah share teks divalidasi.
+4. Apakah perlu opsi merge saat restore; MVP menggunakan replace untuk menyederhanakan konsistensi data.
+5. Apakah perlu sinkronisasi cloud dan multi-user setelah kebutuhan pasar terbukti.
+6. Apakah perlu skema honor tutor; jangan dibangun sebelum aturan pembayaran tutor tervalidasi.
+7. Apakah perlu batas gratis atau paket Pro/IAP; tidak termasuk MVP.
 
 ---
 
 ## 19. Referensi Produk dan Dokumentasi
 
-- TutorDesk – Coaching Manager di Google Play — referensi pembanding untuk pendekatan offline-first, daftar siswa/kelas, kehadiran, pembayaran, dan backup. Gunakan sebagai referensi UX/density, bukan untuk menyalin UI atau seluruh feature set.
-- Google AdMob — Ad units, ad formats, and ad types — daftar format banner, interstitial, rewarded, native, app open, dan jenis iklan.
-- Google AdMob — Android banner ads — panduan banner/adaptive banner Android.
-- Google AdMob — Interstitial ad guidance — panduan penempatan interstitial pada titik jeda/transisi yang sesuai dan risiko gangguan UX.
+- [TutorDesk – Coaching Manager di Google Play](https://play.google.com/store/apps/details?id=com.tutordesk.app) — referensi pembanding untuk pendekatan offline-first, daftar siswa/kelas, kehadiran, dan jadwal.
+- [Google AdMob — Ad units, ad formats, and ad types](https://support.google.com/admob/answer/6128738) — daftar format banner, interstitial, rewarded, native, app open, dan jenis iklan.
+- [Google AdMob — Android banner ads](https://developers.google.com/admob/android/banner) — panduan banner/adaptive banner Android.
+- [Google AdMob — Interstitial ad guidance](https://support.google.com/admob/answer/6066980) — panduan penempatan interstitial pada titik jeda/transisi yang sesuai dan risiko gangguan UX.
 
 ---
 
