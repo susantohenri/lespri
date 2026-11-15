@@ -29,9 +29,11 @@ local.properties
 # Captures and profiling
 *.hprof
 
-# Keystore files
+# Keystore & Google Services credentials
 *.jks
 *.keystore
+**/google-services.json
+google-services.json
 
 # OS generated files
 .DS_Store
