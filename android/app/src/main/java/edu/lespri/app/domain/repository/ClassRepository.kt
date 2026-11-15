@@ -1,0 +1,17 @@
+package edu.lespri.app.domain.repository
+
+import edu.lespri.app.domain.model.ClassGroup
+import edu.lespri.app.domain.model.ClassGroupDetail
+import edu.lespri.app.domain.model.Enrollment
+import kotlinx.coroutines.flow.Flow
+
+/**
+ * Kontrak repositori untuk data kelas dan pendaftaran (enrollment).
+ */
+interface ClassRepository {
+    fun getClasses(): Flow<List<ClassGroup>>
+    fun getClassDetail(id: String): Flow<ClassGroupDetail?>
+    suspend fun saveClass(classGroup: ClassGroup): Result<Unit>
+    suspend fun enrollStudent(enrollment: Enrollment): Result<Unit>
+    suspend fun removeEnrollment(enrollmentId: String): Result<Unit>
+}
