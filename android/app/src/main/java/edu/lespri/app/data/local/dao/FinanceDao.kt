@@ -158,12 +158,14 @@ interface FinanceDao {
      * Hitung jumlah siswa dengan saldo paket rendah (≤ threshold) untuk dashboard alert.
      */
     @Query("""
-        SELECT COUNT(DISTINCT pl.enrollment_id) 
-        FROM package_ledgers pl
-        INNER JOIN enrollments e ON pl.enrollment_id = e.id
-        WHERE e.billing_type = 'PACKAGE' AND e.status = 'ACTIVE'
-        GROUP BY pl.enrollment_id
-        HAVING SUM(pl.delta_sessions) <= :threshold
+        SELECT COUNT(*) FROM (
+            SELECT pl.enrollment_id 
+            FROM package_ledgers pl
+            INNER JOIN enrollments e ON pl.enrollment_id = e.id
+            WHERE e.billing_type = 'PACKAGE' AND e.status = 'ACTIVE'
+            GROUP BY pl.enrollment_id
+            HAVING SUM(pl.delta_sessions) <= :threshold
+        )
     """)
     fun countLowBalanceEnrollments(threshold: Int): Flow<Int>
 

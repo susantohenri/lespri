@@ -6,6 +6,7 @@ import edu.lespri.app.data.local.dao.AttendanceDao
 import edu.lespri.app.data.local.dao.ClassDao
 import edu.lespri.app.data.local.dao.FinanceDao
 import edu.lespri.app.data.local.dao.ScheduleDao
+import edu.lespri.app.data.local.dao.SettingDao
 import edu.lespri.app.data.local.dao.StudentDao
 import edu.lespri.app.data.local.dao.TutorDao
 import edu.lespri.app.data.local.entity.AppSettingEntity
@@ -77,6 +78,7 @@ abstract class LespriDatabase : RoomDatabase() {
     abstract fun scheduleDao(): ScheduleDao
     abstract fun attendanceDao(): AttendanceDao
     abstract fun financeDao(): FinanceDao
+    abstract fun settingDao(): SettingDao
 
     companion object {
         /**

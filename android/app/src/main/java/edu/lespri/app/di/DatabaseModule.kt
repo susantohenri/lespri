@@ -12,6 +12,7 @@ import edu.lespri.app.data.local.dao.AttendanceDao
 import edu.lespri.app.data.local.dao.ClassDao
 import edu.lespri.app.data.local.dao.FinanceDao
 import edu.lespri.app.data.local.dao.ScheduleDao
+import edu.lespri.app.data.local.dao.SettingDao
 import edu.lespri.app.data.local.dao.StudentDao
 import edu.lespri.app.data.local.dao.TutorDao
 import javax.inject.Singleton
@@ -66,5 +67,10 @@ object DatabaseModule {
     @Provides
     fun provideFinanceDao(database: LespriDatabase): FinanceDao {
         return database.financeDao()
+    }
+
+    @Provides
+    fun provideSettingDao(database: LespriDatabase): SettingDao {
+        return database.settingDao()
     }
 }
