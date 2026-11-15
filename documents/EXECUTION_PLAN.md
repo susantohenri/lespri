@@ -459,8 +459,8 @@ Proyek ini menggunakan **sistem Batch per Model** agar kamu **TIDAK PERLU** meng
 
 ---
 
-### 🎬 MILESTONE 8: Automated App Demo Video Recording Pipeline (New)
-**Goal:** Membuat **2 video demo aplikasi otomatis** tanpa perlu klik manual atau rekam layar manual. Cukup jalankan satu script otomasi (`adb` + UI Automator), aplikasi berjalan sendiri, dan langsung terekam ke file MP4 resolusi tinggi.
+### 🎬 MILESTONE 8: Automated App Demo & Play Store Asset Pipeline (Video & Screenshots)
+**Goal:** Membuat **2 video demo otomatis** dan **7 screenshot listing Google Play Store berkualitas tinggi** dengan data realistis tanpa perlu intervensi klik manual. Cukup jalankan script otomasi (`adb` + UI Automator), aplikasi berjalan sendiri, terekam menjadi file MP4 resolusi tinggi, dan mengambil snapshot layar ke folder asset listing.
 
 #### Spesifikasi 2 Video Demo:
 1. **Video 1 — Operasional Harian Bimbel (Durasi: ~30-45 detik):**
@@ -468,15 +468,29 @@ Proyek ini menggunakan **sistem Batch per Model** agar kamu **TIDAK PERLU** meng
 2. **Video 2 — Setup Cepat & Portabilitas Data (Durasi: ~30 detik):**
    * *Alur Otomasi:* Setup Bimbel baru (P01) $\rightarrow$ Impor CSV Siswa (P21) $\rightarrow$ Auto-mapping kolom $\rightarrow$ Preview data valid $\rightarrow$ Konfirmasi $\rightarrow$ Seluruh daftar siswa & kelas langsung terisi secara instan $\rightarrow$ Export Backup JSON (P23) $\rightarrow$ Selesai.
 
-#### 🔹 BATCH 8.A `[MODEL: CLAUDE SONNET]` — Automation Scripts & Master Recorder
-* [ ] **Task 8.1:** Implement Demo Data Seeder (`android/app/src/androidTest/java/edu/lespri/app/demo/DemoDataSeeder.kt`)
-  * Menyediakan seed database realistis (nama bimbel, 5 siswa contoh, 2 tutor, jadwal aktif).
+#### Spesifikasi 7 Screenshot Listing Google Play Store (Asset Showcase):
+Semua screenshot ditangkap dalam mode portrait (1080x2400 / rasio 9:20), berlatar data realistis bahasa Indonesia (Bimbel "Prestasi Cendekia"):
+1. **SS 01 — Dashboard / Beranda (P02):** *Headline:* "Pusat Kontrol Bimbel: Jadwal, Tunggakan & Sesi Hari Ini".
+2. **SS 02 — Lembar Presensi & Auto-Potong Paket (P15):** *Headline:* "Presensi Kilat, Saldo Paket Siswa Terpotong Otomatis".
+3. **SS 03 — Ringkasan Keuangan & Tagihan (P16):** *Headline:* "Pantau Tagihan & Siswa Menunggak Tanpa Repot".
+4. **SS 04 — Kuitansi Pembayaran & Share WhatsApp (P19):** *Headline:* "Kuitansi Resmi & Rincian Pembayaran Siap Kirim via WhatsApp".
+5. **SS 05 — Agenda & Jadwal Sesi (P12):** *Headline:* "Kelola Jadwal & Tutor Rapi Bebas Bentrok".
+6. **SS 06 — Profil Detail Siswa (P05):** *Headline:* "Data Siswa, Riwayat Kehadiran & Paket Terpusat".
+7. **SS 07 — Impor CSV & 100% Offline (P21/P23):** *Headline:* "100% Offline Tanpa Biaya Bulanan & Impor Mudah dari Excel".
+
+#### 🔹 BATCH 8.A `[MODEL: CLAUDE SONNET]` — Automation Scripts, Seeder & Master Pipeline
+* [ ] **Task 8.1:** Implement Realistic Demo & Play Store Data Seeder (`android/app/src/androidTest/java/edu/lespri/app/demo/DemoDataSeeder.kt`)
+  * Menyediakan seed database realistis Indonesia: Bimbel Prestasi Cendekia, 3 tutor (Bu Ratna, Kak Hendra, Kak Kevin), 5 siswa contoh dengan variasi status paket & tunggakan, sesi jadwal hari ini & kemarin, serta kuitansi pembayaran resmi.
 * [ ] **Task 8.2:** Implement UI Automator Script for Video 1 (`android/app/src/androidTest/java/edu/lespri/app/demo/DailyOpsDemoTest.kt`)
-  * Menjalankan navigasi otomatis dengan jeda timing yang enak ditonton manusia.
+  * Menjalankan navigasi otomatis operasional harian dengan jeda timing yang enak ditonton manusia.
 * [ ] **Task 8.3:** Implement UI Automator Script for Video 2 (`android/app/src/androidTest/java/edu/lespri/app/demo/DataPortabilityDemoTest.kt`)
   * Menjalankan otomasi onboarding dan import CSV.
 * [ ] **Task 8.4:** Implement Master Recording Script (`android/scripts/record_showcase_videos.ps1`)
   * Menyalakan `adb screenrecord`, mentrigger test runner, menarik file MP4 ke `assets/videos/video_1_daily_ops.mp4` dan `assets/videos/video_2_setup_import.mp4`.
+* [ ] **Task 8.5:** Implement UI Automator Script for Play Store Screenshots (`android/app/src/androidTest/java/edu/lespri/app/demo/PlayStoreScreenshotTest.kt`)
+  * Bernavigasi ke 7 layar kurasi utama, menunggu render stabil, lalu menangkap screenshot resolusi tinggi.
+* [ ] **Task 8.6:** Implement Screenshot Capture & Pull Script (`android/scripts/capture_playstore_screenshots.ps1`)
+  * Menginjeksi `DemoDataSeeder`, menjalankan `PlayStoreScreenshotTest`, dan menarik 7 file PNG ke folder `assets/screenshots/playstore/` secara otomatis.
 
 ---
 
@@ -491,7 +505,7 @@ Proyek ini menggunakan **sistem Batch per Model** agar kamu **TIDAK PERLU** meng
 | **M5: Schedule & Attendance** *(Paralel)* | Batch 5.A `[SONNET]`<br>Batch 5.B `[FLASH]` | Agenda & Attendance ViewModels<br>Agenda, Session & Attendance Screens |
 | **M6: Finance & Reminders** *(Paralel)* | Batch 6.A `[SONNET]`<br>Batch 6.B `[FLASH]` | Finance ViewModel, Sharesheet & ReminderScheduler<br>Overview, Charge, Payment & Receipt Screens |
 | **M7: CSV, Backup & Ads** *(Paralel)* | Batch 7.A `[SONNET]`<br>Batch 7.B `[FLASH]` | CSV Engine, BackupManager & AdManager<br>Import/Export, Backup, Banner & Settings Screens |
-| **M8: Video Automation** | Batch 8.A `[SONNET]` | Data Seeder, UI Automator Scripts & PowerShell Master Recorder |
+| **M8: Video & Store Assets** | Batch 8.A `[SONNET]` | Realistic Seeder, UI Automator (Video + 7 SS), & PowerShell Automation Pipeline |
 
 ---
 

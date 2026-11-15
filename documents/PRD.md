@@ -1081,6 +1081,23 @@ Seluruh ID unit iklan dan toggle aktivasi dikelola secara dinamis melalui Fireba
 - QA offline, data integrity, restore, localization, dan ad failure.
 - Privacy policy serta Play Store release readiness.
 
+### 15.6 Standar Aset Listing Google Play Store & Seeder Realistis
+
+Untuk menunjang konversi instalasi di Google Play Store (ASO) dan menampilkan nilai guna aplikasi secara nyata bagi pengelola bimbel rumahan, proses rilis wajib dilengkapi pipeline aset listing terotomasi:
+1. **7 Screenshot Listing Utama:**
+   - Format: Portrait 1080x2400 (rasio 9:20), Material 3 theme.
+   - P02 (Dashboard - Pusat Kontrol Bimbel)
+   - P15 (Pencatatan Kehadiran - Saldo Paket Otomatis)
+   - P16 (Keuangan & Kontrol Tagihan / Jatuh Tempo)
+   - P19 (Kuitansi Resmi & Kirim Rincian via WhatsApp)
+   - P12 (Agenda & Jadwal Sesi Rapi Bebas Bentrok)
+   - P05 (Profil Detail Siswa, Riwayat & Sisa Pertemuan)
+   - P21/P23 (100% Offline Lokal & Impor CSV Excel)
+2. **Realistic Data Seeder (`DemoDataSeeder.kt`):**
+   - Wajib menggunakan data kontekstual bimbel Indonesia (Bimbel Prestasi Cendekia, tutor lokal, siswa dengan variasi status paket aktif, tagihan jatuh tempo, dan kuitansi lunas) untuk menghindari tampilan *empty state* atau teks *dummy* (Lorem Ipsum) yang menurunkan kredibilitas produk.
+3. **Automasi Pengambilan Screenshot:**
+   - Dijalankan via Android UI Automator dan script PowerShell (`capture_playstore_screenshots.ps1`) agar dapat di-generate ulang secara instan setiap kali ada perubahan tema atau UI di masa mendatang.
+
 ---
 
 ## 16. Test Scenarios Minimum

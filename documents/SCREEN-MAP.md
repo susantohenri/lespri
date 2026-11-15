@@ -450,3 +450,35 @@ Pada layar sempit, tab boleh scroll horizontal; jangan membuat tab bertingkat.
 3. **Detail siswa:** tab atau satu halaman panjang ber-section. Rekomendasi: tab/section ringkas, ditetapkan setelah wireframe.
 4. **Tutor:** menu sekunder di drawer; penugasan dilakukan dari form/detail kelas. Rekomendasi: gunakan struktur ini di MVP.
 5. **Kelas di bottom nav:** tetap menjadi tujuan utama karena kelas menghubungkan siswa, tutor, jadwal, dan skema pembayaran.
+
+---
+
+## 10. Kurasi Layar untuk Google Play Store Listing & Showcase Assets
+
+Pemilihan screenshot untuk Play Store listing dirancang untuk memecahkan *pain point* utama pengelola bimbel rumahan dan memaksimalkan konversi instalasi (ASO). Diambil dalam format portrait (1080x2400) menggunakan data bimbel realistis berbahasa Indonesia.
+
+| No | ID Layar | Nama Layar | Headline Promosi (Banner Atas) | Elemen Kunci yang Ditonjolkan | Alasan Pemilihan & Nilai Konversi (ASO) |
+|:---|:---|:---|:---|:---|:---|
+| **01** | **P02** | Dashboard / Beranda | **"Pusat Kontrol Bimbel: Jadwal, Tunggakan & Sesi Hari Ini"** | • Card Total Tunggakan (Merah lembut)<br>• Pemasukan Bulan Ini (Hijau)<br>• Jadwal Sesi Hari Ini (2 sesi)<br>• Warning sesi kemarin belum diabsen | **First Impression Hook:** Penentu utama konversi (70%+ viewer). Menunjukkan bahwa Lespri adalah command center operasional terpadu, bukan sekadar buku catatan pasif. |
+| **02** | **P15** | Pencatatan Kehadiran | **"Presensi Kilat, Saldo Paket Siswa Terpotong Otomatis"** | • Toggle Hadir/Izin/Sakit/Alpa<br>• Preview saldo kuota (Sisa 4 $\rightarrow$ 3 sesi)<br>• Badge peringatan "Sesi Terakhir (8/8)"<br>• Sticky button "Simpan Presensi" | **Killer Feature Hook:** Menjawab ketakutan terbesar pemilik bimbel: lupa sisa sesi paket dan salah potong saat siswa izin/sakit. Otomatisasi ledger terbukti di layar ini. |
+| **03** | **P16** | Keuangan & Tagihan | **"Pantau Tagihan & Siswa Menunggak Tanpa Repot"** | • Tab Tagihan aktif<br>• Kartu total tagihan tertunda<br>• Chip status merah **Jatuh Tempo (H+3)**<br>• Status bayar sebagian (kuning) | **Cashflow Guardian Hook:** Pemilik bimbel butuh aplikasi untuk mengatasi masalah uang dan kebiasaan lupa menagih. Menampilkan kejelasan status jatuh tempo. |
+| **04** | **P19** | Detail Pembayaran / Bukti | **"Kuitansi Resmi & Rincian Pembayaran Siap Kirim via WhatsApp"** | • No. Kuitansi resmi (`#KW-202611-0042`)<br>• Rincian paket & nominal lunas<br>• Tombol aksi utama "Kirim via WhatsApp" (Android Sharesheet) | **Trust & Professionalism Hook:** Meningkatkan wibawa bimbel di hadapan orang tua murid dengan kuitansi profesional tanpa perlu printer fisik. |
+| **05** | **P12** | Agenda & Jadwal Sesi | **"Kelola Jadwal & Tutor Rapi Bebas Bentrok"** | • Agenda mingguan/harian<br>• Kartu sesi: jam, mapel, nama tutor<br>• Status chip ("Selesai", "Segera Dimulai") | **Peace of Mind Hook:** Menjawab kerumitan mengatur jadwal banyak kelas dan multi-tutor dalam ruang/waktu terbatas tanpa tumpang tindih. |
+| **06** | **P05** | Detail Siswa | **"Data Siswa, Riwayat Kehadiran & Paket Terpusat"** | • Profil siswa & tombol WhatsApp ortu<br>• Ringkasan paket aktif (Sisa 3/8 sesi)<br>• Riwayat kehadiran 100%<br>• Tagihan lunas | **Single Source of Truth Hook:** Membantu pemilik bimbel menjawab pertanyaan orang tua murid mengenai absensi dan sisa pertemuan dalam 5 detik. |
+| **07** | **P21/P23** | Impor CSV & Portabilitas | **"100% Offline Tanpa Biaya Bulanan & Impor Mudah dari Excel"** | • Auto-mapping kolom CSV Excel<br>• Preview baris valid instan<br>• Badge "100% Data Lokal & Aman di HP" | **Zero Friction & Privacy Hook:** Menghilangkan keengganan beralih karena repot ketik ulang dari Excel, sekaligus meyakinkan bahwa aplikasi bebas biaya langganan cloud. |
+
+### Spesifikasi Seeder Data Realistis Play Store (`PlayStoreDataSeeder.kt`)
+Agar tangkapan layar terlihat meyakinkan bagi pengguna di Indonesia, data seeder wajib menggunakan data berikut:
+* **Entitas Bimbel:** *"Bimbel Prestasi Cendekia"*, Jl. Melati No. 14, Jakarta Timur (Kontak: `0812-3456-7890`).
+* **Tutor:** Bu Ratna (Matematika SMA), Kak Hendra (Fisika & Sains), Kak Kevin (Bahasa Inggris & Kimia).
+* **Siswa Contoh:**
+  1. *Ahmad Fauzi* (SMA 12 IPA) — Paket 8 Sesi Fisika (Sisa 3 sesi, status Lunas, riwayat kehadiran 100%).
+  2. *Clarissa Aurelia* (SMA 11 IPA) — Paket 8 Sesi Matematika (Tagihan Rp 800.000, Jatuh Tempo H+3).
+  3. *Dimas Pratama* (SMP 9) — SPP Bulanan (Tagihan Rp 450.000, bayar sebagian Rp 250.000, sisa Rp 200.000).
+  4. *Nabila Putri* (SMA 10) — Kelas Kelompok Bahasa Inggris (Status izin pada sesi terakhir).
+  5. *Raditya Pratama* (SD Kelas 6) — Paket 8 Sesi (Sisa 1 sesi $\rightarrow$ alert kuota hampir habis).
+* **Kelas & Jadwal:**
+  - Fisika Intensif UTBK (Privat, Kak Hendra, Rp 900.000/paket)
+  - Matematika SMA 12 (Kelompok, Bu Ratna, Rp 500.000/bln)
+  - English Conversation SMP (Kelompok, Kak Kevin, Rp 75.000/sesi)
+* **Kuitansi Sah:** `#KW-202611-0042` atas nama Ibu Maya (Wali Ahmad Fauzi), nominal Rp 900.000 Lunas.
