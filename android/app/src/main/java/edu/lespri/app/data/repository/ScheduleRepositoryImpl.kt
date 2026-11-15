@@ -18,6 +18,7 @@ import edu.lespri.app.domain.model.ChargeStatus
 import edu.lespri.app.domain.model.LedgerEntryType
 import edu.lespri.app.domain.model.LessonSession
 import edu.lespri.app.domain.model.LessonSessionDetail
+import edu.lespri.app.domain.model.ScheduleRule
 import edu.lespri.app.domain.model.SessionStatus
 import edu.lespri.app.domain.model.StudentAttendanceItem
 import edu.lespri.app.domain.repository.ScheduleRepository
@@ -115,6 +116,26 @@ class ScheduleRepositoryImpl @Inject constructor(
     override suspend fun createAdHocSession(session: LessonSession): Result<Unit> {
         return runCatching {
             scheduleDao.insertAdHocSession(session.toEntity())
+        }
+    }
+
+    override suspend fun updateSession(session: LessonSession): Result<Unit> {
+        return runCatching {
+            val existing = scheduleDao.getSessionByIdSync(session.id)
+                ?: throw IllegalArgumentException("Sesi tidak ditemukan")
+            if (existing.status == SessionStatus.CANCELLED.name) {
+                throw IllegalStateException("Sesi yang sudah dibatalkan tidak dapat diubah")
+            }
+            scheduleDao.updateSession(session.toEntity())
+        }
+    }
+
+    override suspend fun saveScheduleRule(rule: ScheduleRule): Result<Unit> {
+        return runCatching {
+            if (rule.weekday !in 1..7) {
+                throw IllegalArgumentException("Hari pengulangan tidak valid")
+            }
+            scheduleDao.upsertScheduleRule(rule.toEntity())
         }
     }
 

@@ -5,12 +5,14 @@ import dagger.Module
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import edu.lespri.app.data.repository.AttendanceRepositoryImpl
+import edu.lespri.app.data.repository.BackupRepositoryImpl
 import edu.lespri.app.data.repository.ClassRepositoryImpl
 import edu.lespri.app.data.repository.FinanceRepositoryImpl
 import edu.lespri.app.data.repository.ScheduleRepositoryImpl
 import edu.lespri.app.data.repository.StudentRepositoryImpl
 import edu.lespri.app.data.repository.TutorRepositoryImpl
 import edu.lespri.app.domain.repository.AttendanceRepository
+import edu.lespri.app.domain.repository.BackupRepository
 import edu.lespri.app.domain.repository.ClassRepository
 import edu.lespri.app.domain.repository.FinanceRepository
 import edu.lespri.app.domain.repository.ScheduleRepository
@@ -61,4 +63,10 @@ abstract class RepositoryModule {
     abstract fun bindFinanceRepository(
         impl: FinanceRepositoryImpl
     ): FinanceRepository
+
+    @Binds
+    @Singleton
+    abstract fun bindBackupRepository(
+        impl: BackupRepositoryImpl
+    ): BackupRepository
 }

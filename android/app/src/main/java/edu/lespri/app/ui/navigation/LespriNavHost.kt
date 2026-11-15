@@ -17,6 +17,10 @@ import edu.lespri.app.ui.setup.FirstLaunchSetupScreen
 import edu.lespri.app.ui.student.StudentDetailScreen
 import edu.lespri.app.ui.student.StudentFormScreen
 import edu.lespri.app.ui.student.StudentListScreen
+import edu.lespri.app.ui.finance.ChargeDetailScreen
+import edu.lespri.app.ui.finance.FinanceOverviewScreen
+import edu.lespri.app.ui.finance.PaymentReceiptScreen
+import edu.lespri.app.ui.finance.RecordPaymentScreen
 import edu.lespri.app.ui.tutor.TutorFormScreen
 import edu.lespri.app.ui.tutor.TutorListScreen
 
@@ -250,45 +254,41 @@ fun LespriNavHost(
 
         // --- P16: Keuangan (Milestone 6) ---
         composable(NavRoutes.Finance.route) {
-            PlaceholderScreen(
-                title = "Keuangan Bimbel",
-                route = NavRoutes.Finance.route,
-                navController = navController
+            FinanceOverviewScreen(
+                onNavigateToRoute = { route -> navController.navigate(route) }
             )
         }
 
-        // --- P17-P19: Detail Tagihan & Pembayaran (Milestone 6) ---
+        // --- P17: Detail Tagihan (Milestone 6) ---
         composable(
             route = NavRoutes.ChargeDetail.route,
             arguments = listOf(navArgument("chargeId") { type = NavType.StringType })
         ) {
-            PlaceholderScreen(
-                title = "Detail Tagihan",
-                route = NavRoutes.ChargeDetail.route,
-                navController = navController,
-                onBack = { navController.popBackStack() }
+            ChargeDetailScreen(
+                onBack = { navController.popBackStack() },
+                onNavigateToRoute = { route -> navController.navigate(route) }
             )
         }
+
+        // --- P18: Catat Pembayaran (Milestone 6) ---
         composable(
             route = NavRoutes.RecordPayment.route,
             arguments = listOf(navArgument("chargeId") { type = NavType.StringType })
         ) {
-            PlaceholderScreen(
-                title = "Catat Pembayaran",
-                route = NavRoutes.RecordPayment.route,
-                navController = navController,
-                onBack = { navController.popBackStack() }
+            RecordPaymentScreen(
+                onBack = { navController.popBackStack() },
+                onNavigateToRoute = { route -> navController.navigate(route) }
             )
         }
+
+        // --- P19: Kuitansi Pembayaran (Milestone 6) ---
         composable(
             route = NavRoutes.PaymentReceipt.route,
             arguments = listOf(navArgument("paymentId") { type = NavType.StringType })
         ) {
-            PlaceholderScreen(
-                title = "Kwitansi Pembayaran",
-                route = NavRoutes.PaymentReceipt.route,
-                navController = navController,
-                onBack = { navController.popBackStack() }
+            PaymentReceiptScreen(
+                onBack = { navController.popBackStack() },
+                onNavigateToRoute = { route -> navController.navigate(route) }
             )
         }
 

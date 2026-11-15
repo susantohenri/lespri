@@ -15,6 +15,7 @@ import edu.lespri.app.data.local.dao.ScheduleDao
 import edu.lespri.app.data.local.dao.SettingDao
 import edu.lespri.app.data.local.dao.StudentDao
 import edu.lespri.app.data.local.dao.TutorDao
+import edu.lespri.app.util.BackupManager
 import javax.inject.Singleton
 
 /**
@@ -72,5 +73,13 @@ object DatabaseModule {
     @Provides
     fun provideSettingDao(database: LespriDatabase): SettingDao {
         return database.settingDao()
+    }
+
+    @Provides
+    @Singleton
+    fun provideBackupManager(
+        @ApplicationContext context: Context
+    ): BackupManager {
+        return BackupManager.create(context)
     }
 }

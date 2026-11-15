@@ -53,6 +53,15 @@ enum class PaymentMethod {
     OTHER
 }
 
+/**
+ * Tab navigasi di layar Keuangan (P16).
+ */
+enum class FinanceTab {
+    CHARGES,
+    PAYMENTS,
+    PACKAGES
+}
+
 // ---------------------------------------------------------------------------
 // 1. ENROLLMENT — status seorang siswa dalam suatu kelas
 // ---------------------------------------------------------------------------

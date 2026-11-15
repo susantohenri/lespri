@@ -31,4 +31,8 @@ interface SettingDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun setSetting(setting: AppSettingEntity)
+
+    /** Ambil semua pengaturan untuk backup JSON. */
+    @Query("SELECT * FROM app_settings ORDER BY setting_key ASC")
+    suspend fun getAllSettingsForBackup(): List<AppSettingEntity>
 }
