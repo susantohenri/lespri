@@ -5,15 +5,19 @@ import android.widget.FrameLayout
 import android.widget.LinearLayout
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.AbstractComposeView
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.viewinterop.AndroidView
 import com.google.android.gms.ads.AdListener
 import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.AdSize
@@ -65,7 +69,7 @@ private fun AndroidBannerAdView(
         }
     }
 
-    androidx.compose.ui.platform.AndroidView(
+    AndroidView(
         factory = { bannerView.view },
         modifier = modifier,
         update = {
@@ -82,7 +86,7 @@ private fun AndroidBannerAdView(
                 .padding(vertical = 4.dp),
             style = MaterialTheme.typography.bodySmall,
             color = MaterialTheme.colorScheme.onSurfaceVariant,
-            textAlign = androidx.compose.ui.text.TextAlign.Center
+            textAlign = TextAlign.Center
         )
     }
 }
@@ -111,7 +115,7 @@ private class BannerAdViewHolder(
 
         adView = AdView(context).apply {
             adUnitId = adManager.bannerAdUnitId
-            adSize = AdSize.BANNER
+            setAdSize(AdSize.BANNER)
             adListener = object : AdListener() {
                 override fun onAdFailedToLoad(adError: LoadAdError) {
                     // Silent fail — iklan tes mungkin belum siap, tidak mengganggu UX

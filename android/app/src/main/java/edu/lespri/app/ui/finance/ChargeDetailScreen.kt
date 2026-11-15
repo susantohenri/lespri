@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.AddCircle
 import androidx.compose.material.icons.filled.Error
 import androidx.compose.material.icons.filled.Share
@@ -31,7 +32,6 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
-import androidx.compose.material3.rememberInputState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -39,6 +39,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -68,6 +69,7 @@ fun ChargeDetailScreen(
     onNavigateToRoute: (String) -> Unit,
     viewModel: ChargeDetailViewModel = hiltViewModel()
 ) {
+    val context = LocalContext.current
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val snackbarHostState = remember { SnackbarHostState() }
     val scope = rememberCoroutineScope()
@@ -92,13 +94,13 @@ fun ChargeDetailScreen(
                 title = { Text("Detail Tagihan") },
                 navigationIcon = {
                     IconButton(onClick = onBack) {
-                        Icon(Icons.Default.ArrowBack, contentDescription = "Kembali")
+                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Kembali")
                     }
                 },
                 actions = {
                     IconButton(
                         onClick = {
-                            viewModel.shareCharge()
+                            viewModel.shareCharge(context)
                         }
                     ) {
                         Icon(Icons.Default.Share, contentDescription = "Bagikan")
@@ -176,12 +178,12 @@ fun ChargeDetailScreen(
                     ) {
                         Column {
                             Text(
-                                text = charge.charge.studentName,
+                                text = charge.studentName,
                                 style = MaterialTheme.typography.headlineSmall,
                                 fontWeight = FontWeight.Bold
                             )
                             Text(
-                                text = charge.charge.className,
+                                text = charge.className,
                                 style = MaterialTheme.typography.bodyMedium,
                                 color = MaterialTheme.colorScheme.onSurfaceVariant
                             )
@@ -301,7 +303,7 @@ private fun formatDate(timestamp: Long): String {
     return try {
         val sdf = java.text.SimpleDateFormat("dd MMM yyyy HH:mm", java.util.Locale("id"))
         sdf.format(java.util.Date(timestamp))
-    } catch (_: Exception) {
+    } catch (e: Exception) {
         ""
     }
 }

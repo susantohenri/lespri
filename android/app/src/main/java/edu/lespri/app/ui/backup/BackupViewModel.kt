@@ -57,28 +57,24 @@ class BackupViewModel @Inject constructor(
         viewModelScope.launch {
             _uiState.update { it.copy(isLoading = true, errorMessage = null, successMessage = null) }
             val result = backupRepository.exportJsonBackup()
-            when (val outcome = result) {
-                is Result.Success -> {
-                    val jsonPayload = outcome.getOrNull()
-                    val fileName = backupManager.backupFileName()
-                    try {
-                        val payloadMap = mapOf("backup" to jsonPayload)
-                        backupManager.exportToFile(payloadMap, fileName)
-                        _uiState.update {
-                            it.copy(
-                                isLoading = false,
-                                successMessage = "Backup berhasil diekspor: $fileName",
-                                lastExportFileName = fileName
-                            )
-                        }
-                        refreshBackupList()
-                    } catch (e: Exception) {
-                        _uiState.update { it.copy(isLoading = false, errorMessage = e.message) }
+            result.onSuccess { jsonPayload ->
+                val fileName = backupManager.backupFileName()
+                try {
+                    val payloadMap = mapOf("backup" to jsonPayload)
+                    backupManager.exportToFile(payloadMap, fileName)
+                    _uiState.update {
+                        it.copy(
+                            isLoading = false,
+                            successMessage = "Backup berhasil diekspor: $fileName",
+                            lastExportFileName = fileName
+                        )
                     }
+                    refreshBackupList()
+                } catch (e: Exception) {
+                    _uiState.update { it.copy(isLoading = false, errorMessage = e.message) }
                 }
-                is Result.Failure -> {
-                    _uiState.update { it.copy(isLoading = false, errorMessage = outcome.exceptionOrNull()?.message) }
-                }
+            }.onFailure { error ->
+                _uiState.update { it.copy(isLoading = false, errorMessage = error.message) }
             }
         }
     }
@@ -92,25 +88,18 @@ class BackupViewModel @Inject constructor(
         viewModelScope.launch {
             _uiState.update { it.copy(isLoading = true, errorMessage = null, successMessage = null) }
             try {
-                val payload = backupManager.importFromFile(file)
-                val jsonString = kotlinx.serialization.encodeToString(
-                    kotlinx.serialization.json.Json { ignoreUnknownKeys = true },
-                    payload
-                )
+                val jsonString = backupManager.importFromFile(file)
                 val result = backupRepository.restoreJsonBackup(jsonString)
-                when (val outcome = result) {
-                    is Result.Success -> {
-                        _uiState.update {
-                            it.copy(
-                                isLoading = false,
-                                successMessage = "Backup berhasil dipulihkan."
-                            )
-                        }
-                        refreshBackupList()
+                result.onSuccess {
+                    _uiState.update {
+                        it.copy(
+                            isLoading = false,
+                            successMessage = "Backup berhasil dipulihkan."
+                        )
                     }
-                    is Result.Failure -> {
-                        _uiState.update { it.copy(isLoading = false, errorMessage = outcome.exceptionOrNull()?.message) }
-                    }
+                    refreshBackupList()
+                }.onFailure { error ->
+                    _uiState.update { it.copy(isLoading = false, errorMessage = error.message) }
                 }
             } catch (e: Exception) {
                 _uiState.update { it.copy(isLoading = false, errorMessage = e.message) }

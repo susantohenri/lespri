@@ -29,11 +29,11 @@ object CsvEngine {
     /**
      * Kesalahan saat parsing atau generate CSV.
      */
-    sealed class CsvError {
-        object EmptyInput : CsvError()
-        data class MissingHeaders(val found: List<String>) : CsvError()
-        data class RowLengthMismatch(val rowNumber: Int, val expected: Int, val actual: Int) : CsvError()
-        data class ParseError(val message: String) : CsvError()
+    sealed class CsvError(message: String? = null) : Exception(message) {
+        object EmptyInput : CsvError("Input CSV kosong")
+        data class MissingHeaders(val found: List<String>) : CsvError("Header tidak ditemukan")
+        data class RowLengthMismatch(val rowNumber: Int, val expected: Int, val actual: Int) : CsvError("Panjang baris tidak sesuai")
+        data class ParseError(override val message: String) : CsvError(message)
     }
 
     /**
@@ -60,18 +60,13 @@ object CsvEngine {
             val line = lines[i]
             if (line.isBlank()) continue
             val fields = parseFields(line)
-            val row = headers.indices.associateWith { idx ->
-                fields.getOrNull(idx) ?: ""
+            val row = headers.indices.associate { idx ->
+                headers[idx] to (fields.getOrNull(idx) ?: "")
             }
             rows += row
         }
 
         CsvResult(headers, rows)
-    }.onFailure { e ->
-        // Jika bukan CsvError, balikkan sebagai ParseError
-        if (e !is CsvError) {
-            throw CsvError.ParseError(e.message ?: "Gagal parsing CSV")
-        }
     }
 
     /**

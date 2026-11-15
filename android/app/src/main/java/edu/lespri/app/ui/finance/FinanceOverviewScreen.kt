@@ -33,6 +33,9 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
@@ -84,11 +87,9 @@ fun FinanceOverviewScreen(
         currentRoute = NavRoutes.Finance.route,
         onNavigateToRoute = onNavigateToRoute,
         title = "Keuangan"
-    ) { innerPadding ->
+    ) {
         Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(innerPadding)
+            modifier = Modifier.fillMaxSize()
         ) {
             // Summary cards
             FinanceSummaryCards(summary = uiState.financialSummary)
@@ -100,20 +101,14 @@ fun FinanceOverviewScreen(
                 FinanceTabItem(FinanceTab.PACKAGES, "Paket", Icons.Default.AccountBalanceWallet)
             )
 
-            var selectedTabIndex by androidx.compose.runtime.mutableStateOf(
-                tabs.indexOfFirst { it.tab == uiState.activeTab }.coerceAtLeast(0)
-            )
+            var selectedTabIndex by remember(uiState.activeTab) {
+                mutableIntStateOf(tabs.indexOfFirst { it.tab == uiState.activeTab }.coerceAtLeast(0))
+            }
 
             TabRow(
                 selectedTabIndex = selectedTabIndex,
                 containerColor = MaterialTheme.colorScheme.surface,
                 contentColor = MaterialTheme.colorScheme.primary,
-                indicator = { tabPositions ->
-                    TabRowDefaults.PrimaryIndicator(
-                        pos = tabPositions[selectedTabIndex],
-                        color = MaterialTheme.colorScheme.primary
-                    )
-                },
                 divider = {}
             ) {
                 tabs.forEachIndexed { index, tab ->
@@ -238,7 +233,7 @@ private fun SummaryCard(
             backgroundColor = bgColor,
             contentColor = color
         )
-        Spacer(modifier = androidx.compose.foundation.layout.Modifier.padding(6.dp))
+        Spacer(modifier = Modifier.padding(6.dp))
         Text(
             text = value,
             style = MaterialTheme.typography.headlineSmall,
@@ -460,7 +455,7 @@ private fun formatRupiah(amount: Long): String {
 private fun formatDate(timestamp: Long): String {
     return try {
         SimpleDateFormat("dd MMM yyyy HH:mm", Locale("id")).format(java.util.Date(timestamp))
-    } catch (_: Exception) {
+    } catch (e: Exception) {
         ""
     }
 }

@@ -3,6 +3,7 @@ package edu.lespri.app.ui.csv
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
+import edu.lespri.app.domain.model.ImportSummary
 import edu.lespri.app.domain.repository.BackupRepository
 import edu.lespri.app.util.CsvEngine
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -11,7 +12,6 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
-import kotlin.Result
 
 /**
  * State UI untuk layar Impor CSV (P21).
@@ -32,13 +32,6 @@ data class CsvImportUiState(
     val importSummary: ImportSummary? = null
 )
 
-data class ImportSummary(
-    val totalRows: Int = 0,
-    val importedCount: Int = 0,
-    val failedCount: Int = 0,
-    val errors: List<String> = emptyList()
-)
-
 @HiltViewModel
 class CsvImportViewModel @Inject constructor(
     private val backupRepository: BackupRepository
@@ -50,26 +43,22 @@ class CsvImportViewModel @Inject constructor(
     /** Memuat dan mem-parsing teks CSV. Dipanggil setelah layar membaca berkas. */
     fun loadCsv(csvText: String) {
         val result = CsvEngine.parse(csvText)
-        when (val parsed = result) {
-            is Result.Success -> {
-                val csv = parsed.getOrNull()
-                _uiState.update {
-                    it.copy(
-                        csvResult = csv,
-                        headerMapping = emptyMap(),
-                        previewRows = emptyList(),
-                        errorMessage = null,
-                        successMessage = null,
-                        importSummary = null
-                    )
-                }
-                if (csv?.headers.isNotEmpty() == true) {
-                    suggestHeaderMapping(csv!!.headers)
-                }
+        result.onSuccess { csv ->
+            _uiState.update {
+                it.copy(
+                    csvResult = csv,
+                    headerMapping = emptyMap(),
+                    previewRows = emptyList(),
+                    errorMessage = null,
+                    successMessage = null,
+                    importSummary = null
+                )
             }
-            is Result.Failure -> {
-                _uiState.update { it.copy(errorMessage = "Gagal membaca CSV: ${parsed.exceptionOrNull()?.message}") }
+            if (csv.headers.isNotEmpty()) {
+                suggestHeaderMapping(csv.headers)
             }
+        }.onFailure { error ->
+            _uiState.update { it.copy(errorMessage = "Gagal membaca CSV: ${error.message}") }
         }
     }
 
@@ -125,19 +114,16 @@ class CsvImportViewModel @Inject constructor(
                 rawCsv = CsvEngine.generate(state.csvResult!!.headers, state.csvResult!!.rows),
                 columnMapping = mapping
             )
-            when (val outcome = result) {
-                is Result.Success -> {
-                    _uiState.update {
-                        it.copy(
-                            isLoading = false,
-                            successMessage = "Impor selesai: ${outcome.getOrNull()?.importedCount} siswa berhasil, ${outcome.getOrNull()?.failedCount} gagal.",
-                            importSummary = outcome.getOrNull()
-                        )
-                    }
+            result.onSuccess { summary ->
+                _uiState.update {
+                    it.copy(
+                        isLoading = false,
+                        successMessage = "Impor selesai: ${summary.importedCount} siswa berhasil, ${summary.failedCount} gagal.",
+                        importSummary = summary
+                    )
                 }
-                is Result.Failure -> {
-                    _uiState.update { it.copy(isLoading = false, errorMessage = outcome.exceptionOrNull()?.message) }
-                }
+            }.onFailure { error ->
+                _uiState.update { it.copy(isLoading = false, errorMessage = error.message) }
             }
         }
     }

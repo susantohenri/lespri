@@ -30,7 +30,7 @@ object SharesheetHelper {
         chooser.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
         try {
             startActivity(context, chooser, null)
-        } catch (_: Exception) {
+        } catch (e: Exception) {
             // Tidak ada aplikasi yang bisa menangani intent
         }
     }
@@ -73,7 +73,7 @@ object SharesheetHelper {
                 // WhatsApp tidak terinstal — fallback ke sharesheet
                 shareGeneric(context, "Bagikan Pesan", message)
             }
-        } catch (_: Exception) {
+        } catch (e: Exception) {
             // Gagal membuka WhatsApp — fallback ke sharesheet
             shareGeneric(context, "Bagikan Pesan", message)
         }

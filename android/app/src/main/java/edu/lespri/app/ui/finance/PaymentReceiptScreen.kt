@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material.icons.filled.Share
 import androidx.compose.material3.CircularProgressIndicator
@@ -62,7 +63,7 @@ fun PaymentReceiptScreen(
                 title = { Text("Kwitansi Pembayaran") },
                 navigationIcon = {
                     IconButton(onClick = onBack) {
-                        Icon(Icons.Default.ArrowBack, contentDescription = "Kembali")
+                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Kembali")
                     }
                 },
                 actions = {
@@ -144,11 +145,11 @@ fun PaymentReceiptScreen(
             // Student info
             ReceiptInfoRow(
                 label = "Siswa",
-                value = charge.charge.studentName
+                value = charge.studentName
             )
             ReceiptInfoRow(
                 label = "Kelas",
-                value = charge.charge.className
+                value = charge.className
             )
             ReceiptInfoRow(
                 label = "Tanggal",
@@ -253,7 +254,7 @@ private fun formatDate(timestamp: Long): String {
     return try {
         val sdf = java.text.SimpleDateFormat("dd MMMM yyyy", java.util.Locale("id"))
         sdf.format(java.util.Date(timestamp))
-    } catch (_: Exception) {
+    } catch (e: Exception) {
         ""
     }
 }

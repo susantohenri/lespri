@@ -50,8 +50,8 @@ class PaymentReceiptViewModel @Inject constructor(
 
         val message = SharesheetHelper.formatReceiptMessage(
             bimbelName = "Bimbel Lespri",
-            studentName = charge.charge.studentName,
-            className = charge.charge.className,
+            studentName = charge.studentName,
+            className = charge.className,
             paymentAmount = charge.totalPaid,
             chargeAmount = charge.charge.amount,
             remainingBalance = charge.remainingBalance,
@@ -61,7 +61,7 @@ class PaymentReceiptViewModel @Inject constructor(
             method = "Tunai"
         )
 
-        SharesheetHelper.shareGeneric(context, "Kwitansi — ${charge.charge.studentName}", message)
+        SharesheetHelper.shareGeneric(context, "Kwitansi — ${charge.studentName}", message)
     }
 
     private fun loadReceipt() {

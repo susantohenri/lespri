@@ -44,19 +44,16 @@ class CsvExportViewModel @Inject constructor(
         viewModelScope.launch {
             _uiState.update { it.copy(isLoading = true, errorMessage = null, successMessage = null) }
             val result = backupRepository.exportCsvDataset(dataset)
-            when (val outcome = result) {
-                is Result.Success -> {
-                    _uiState.update {
-                        it.copy(
-                            isLoading = false,
-                            successMessage = "Berhasil mengekspor $dataset ke berkas CSV.",
-                            exportedFileName = outcome.getOrNull()
-                        )
-                    }
+            result.onSuccess { fileName ->
+                _uiState.update {
+                    it.copy(
+                        isLoading = false,
+                        successMessage = "Berhasil mengekspor $dataset ke berkas CSV.",
+                        exportedFileName = fileName
+                    )
                 }
-                is Result.Failure -> {
-                    _uiState.update { it.copy(isLoading = false, errorMessage = outcome.exceptionOrNull()?.message) }
-                }
+            }.onFailure { error ->
+                _uiState.update { it.copy(isLoading = false, errorMessage = error.message) }
             }
         }
     }

@@ -8,6 +8,9 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
@@ -18,7 +21,11 @@ import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
 import edu.lespri.app.ui.components.LespriScaffold
@@ -87,8 +94,8 @@ private fun profileCard(viewModel: SettingsViewModel, uiState: SettingsUiState) 
                 label = { Text(text = "Nomor WhatsApp (E.164, contoh +6281234567890)") },
                 modifier = Modifier.fillMaxWidth(),
                 singleLine = true,
-                keyboardOptions = androidx.compose.foundation.text.KeyboardOptions(
-                    keyboardType = androidx.compose.foundation.text.KeyboardType.Phone
+                keyboardOptions = KeyboardOptions(
+                    keyboardType = KeyboardType.Phone
                 )
             )
         }
@@ -138,8 +145,8 @@ private fun adsCard(viewModel: SettingsViewModel, uiState: SettingsUiState) {
                 label = { Text(text = "Threshold Saldo Paket Rendah (sesi)") },
                 modifier = Modifier.width(200.dp),
                 singleLine = true,
-                keyboardOptions = androidx.compose.foundation.text.KeyboardOptions(
-                    keyboardType = androidx.compose.foundation.text.KeyboardType.Number
+                keyboardOptions = KeyboardOptions(
+                    keyboardType = KeyboardType.Number
                 )
             )
             Text(

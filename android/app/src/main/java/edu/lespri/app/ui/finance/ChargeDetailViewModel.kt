@@ -55,18 +55,18 @@ class ChargeDetailViewModel @Inject constructor(
 
     fun shareCharge(context: Context) {
         val state = _uiState.value
-        val charge = state.chargeWithBalance ?: return
+        val item = state.chargeWithBalance ?: return
 
         val message = SharesheetHelper.formatChargeMessage(
             bimbelName = "Bimbel Lespri",
-            studentName = charge.charge.studentName,
-            className = charge.charge.className,
-            chargeAmount = charge.charge.amount,
-            remainingBalance = charge.remainingBalance,
-            dueDate = charge.charge.dueDate
+            studentName = item.studentName,
+            className = item.className,
+            chargeAmount = item.charge.amount,
+            remainingBalance = item.remainingBalance,
+            dueDate = item.charge.dueDate
         )
 
-        SharesheetHelper.shareGeneric(context, "Tagihan — ${charge.charge.studentName}", message)
+        SharesheetHelper.shareGeneric(context, "Tagihan — ${item.studentName}", message)
     }
 
     private fun loadChargeDetail() {
