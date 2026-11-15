@@ -1181,8 +1181,10 @@ Untuk menunjang konversi instalasi di Google Play Store (ASO) dan menampilkan ni
 
 ### 18.1 Resolved for MVP (Hasil Final Diskusi)
 - [x] **AdMob Formats & Frequency:** Adaptive Banner aktif (bawah dashboard & siswa), Interstitial aktif dengan capping (1 per 3 aksi simpan & interval 180s), App Open & Rewarded nonaktif untuk v1.0.
-- [x] **Tech Stack & ID Paket:** Kotlin, Jetpack Compose, Room DB, Firebase Suite, compileSdk/targetSdk 36, Package ID `edu.lespri.app`.
-- [x] **Consent & Privacy Policy:** Menggunakan Google UMP SDK, link resmi `https://susantohenri.github.io/privacy-policy` sudah diverifikasi mencakup AdMob, Analytics, Crashlytics, dan Remote Config.
+- [x] **Monetization Tracking (OnPaidEventListener):** Integrasi `OnPaidEventListener` pada seluruh format iklan yang mencatat event `ad_impression` secara atomik ke Firebase Analytics dengan nilai micros, mata uang, presisi, format, dan unit ID.
+- [x] **Tech Stack & ID Paket:** Kotlin, Jetpack Compose, Room DB, Firebase Suite (Analytics, Remote Config, Crashlytics), compileSdk/targetSdk 36, Package ID `edu.lespri.app`.
+- [x] **Consent & Privacy Policy:** Menggunakan Google UMP SDK v3.1.0 untuk GDPR consent flow dan privacy options form, link resmi `https://susantohenri.github.io/privacy-policy` sudah diverifikasi mencakup AdMob, Analytics, Crashlytics, dan Remote Config.
+- [x] **Bilingual (i18n) & Dynamic Theme:** Lokalisasi bahasa penuh (English `values` default fallback & Bahasa Indonesia `values-in`) dengan deteksi otomatis OS via `AppCompatDelegate.setApplicationLocales` serta pemilihan tema tampilan (Sistem, Terang, Gelap).
 
 ### 18.2 Post-MVP Considerations
 Hal-hal berikut ditunda hingga traksi pasar terbukti:

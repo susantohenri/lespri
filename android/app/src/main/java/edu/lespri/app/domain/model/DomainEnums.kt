@@ -297,7 +297,43 @@ enum class AppSettingKey {
     LOW_SESSION_THRESHOLD,
 
     /** Jam pengingat tagihan harian dalam format "HH:mm" (string). */
-    REMINDER_TIME
+    REMINDER_TIME,
+
+    /** Preferensi bahasa aplikasi ("system", "id", "en"). */
+    LANGUAGE,
+
+    /** Preferensi tema tampilan ("system", "light", "dark"). */
+    THEME
+}
+
+/**
+ * Mode tema aplikasi.
+ */
+enum class AppTheme(val storageValue: String) {
+    SYSTEM("system"),
+    LIGHT("light"),
+    DARK("dark");
+
+    companion object {
+        fun fromStorageValue(value: String?): AppTheme {
+            return entries.firstOrNull { it.storageValue.equals(value, ignoreCase = true) } ?: SYSTEM
+        }
+    }
+}
+
+/**
+ * Pilihan bahasa aplikasi.
+ */
+enum class AppLanguage(val storageValue: String, val localeTag: String) {
+    SYSTEM("system", ""),
+    INDONESIAN("id", "in"),
+    ENGLISH("en", "en");
+
+    companion object {
+        fun fromStorageValue(value: String?): AppLanguage {
+            return entries.firstOrNull { it.storageValue.equals(value, ignoreCase = true) } ?: SYSTEM
+        }
+    }
 }
 
 // =============================================================================

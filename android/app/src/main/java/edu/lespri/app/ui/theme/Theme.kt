@@ -59,6 +59,24 @@ private val DarkColorScheme = darkColorScheme(
 
 @Composable
 fun LespriTheme(
+    appTheme: edu.lespri.app.domain.model.AppTheme = edu.lespri.app.domain.model.AppTheme.SYSTEM,
+    dynamicColor: Boolean = false,
+    content: @Composable () -> Unit
+) {
+    val darkTheme = when (appTheme) {
+        edu.lespri.app.domain.model.AppTheme.DARK -> true
+        edu.lespri.app.domain.model.AppTheme.LIGHT -> false
+        edu.lespri.app.domain.model.AppTheme.SYSTEM -> isSystemInDarkTheme()
+    }
+    LespriTheme(
+        darkTheme = darkTheme,
+        dynamicColor = dynamicColor,
+        content = content
+    )
+}
+
+@Composable
+fun LespriTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
     dynamicColor: Boolean = false,
     content: @Composable () -> Unit

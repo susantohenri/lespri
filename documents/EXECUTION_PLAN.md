@@ -441,21 +441,34 @@ Proyek ini menggunakan **sistem Batch per Model** agar kamu **TIDAK PERLU** meng
 ---
 
 ### 🏗️ MILESTONE 7: Data Portability & Monetization (Bisa Paralel)
-**Goal:** Impor/ekspor CSV, backup/restore JSON, banner iklan AdMob.
+**Goal:** Impor/ekspor CSV, backup/restore JSON, banner iklan AdMob, Settings lengkap, Bilingual (i18n), Google UMP SDK, Firebase Analytics, dan Crashlytics.
+**Status:** ✅ COMPLETED
 
-#### 🔹 BATCH 7.A `[MODEL: CLAUDE SONNET]` — Parsers, Backup & Ad Engine
-* [ ] **Task 7.1:** Implement RFC 4180 Streaming CSV Parser & Generator (`CsvEngine.kt`)
-* [ ] **Task 7.2:** Implement `CsvImportViewModel.kt` (Mapping engine & header matching)
-* [ ] **Task 7.5:** Implement `BackupManager.kt` (Full JSON serializer + GZIP)
-* [ ] **Task 7.6:** Implement `BackupRepositoryImpl.kt`
-* [ ] **Task 7.8:** Implement `AdManager.kt` (AdMob init + Remote Config integration)
+#### 🔹 BATCH 7.A `[MODEL: CLAUDE SONNET & GEMINI FLASH]` — Parsers, Backup & Ad Engine
+* [x] **Task 7.1:** Implement RFC 4180 Streaming CSV Parser & Generator (`CsvEngine.kt`)
+* [x] **Task 7.2:** Implement `CsvImportViewModel.kt` (Mapping engine & header matching)
+* [x] **Task 7.5:** Implement `BackupManager.kt` (Full JSON serializer + GZIP)
+* [x] **Task 7.6:** Implement `BackupRepositoryImpl.kt`
+* [x] **Task 7.8:** Implement `AdManager.kt` (AdMob init + Remote Config integration + `createPaidEventListener`)
+* [x] **Task 7.8a:** Implement `ConsentManager.kt` (Google UMP SDK untuk GDPR consent gathering, consent reset, dan form opsi privasi)
+* [x] **Task 7.8b:** Implement `AnalyticsLogger.kt` (Pencatatan screen view, action events, ad impression revenue via `OnPaidEventListener`, User Properties, dan Crashlytics exception logging)
 
 #### 🔹 BATCH 7.B `[MODEL: GEMINI FLASH HIGH]` — Portability Screens & Settings
-* [ ] **Task 7.3:** Implement `CsvImportScreen.kt` (P21)
-* [ ] **Task 7.4:** Implement `CsvExportScreen.kt` (P22)
-* [ ] **Task 7.7:** Implement `BackupRestoreScreen.kt` (P23)
-* [ ] **Task 7.9:** Implement `BannerAdView.kt` (Adaptive banner with 16dp safety margin)
-* [ ] **Task 7.10:** Implement `SettingsScreen.kt` (P24)
+* [x] **Task 7.3:** Implement `CsvImportScreen.kt` (P21)
+* [x] **Task 7.4:** Implement `CsvExportScreen.kt` (P22)
+* [x] **Task 7.7:** Implement `BackupRestoreScreen.kt` (P23)
+* [x] **Task 7.9:** Implement `BannerAdView.kt` (Adaptive banner dengan safety margin + `OnPaidEventListener` real-time tracking)
+* [x] **Task 7.10:** Implement `SettingsScreen.kt` (P24) & `SettingsViewModel.kt`:
+  * *Profil Bimbel:* Nama bimbel, pemilik, nomor WhatsApp.
+  * *Preferensi Aplikasi:* Switch bahasa (Auto Detect OS, Bahasa Indonesia `values-in`, English `values`), Switch tema (Mengikuti Sistem, Mode Terang, Mode Gelap).
+  * *Iklan & Notifikasi:* Toggle banner iklan AdMob dan threshold saldo paket rendah.
+  * *Legalitas & Info:* Versi aplikasi dinamis (`BuildConfig.VERSION_NAME`), Privacy Policy URL (`https://susantohenri.github.io/privacy-policy`), dan tombol pemicu form UMP Consent.
+* [x] **Task 7.11:** Integrasi Entry Point di `MainActivity.kt` & `LespriApplication.kt`:
+  * Inisialisasi Firebase & Crashlytics.
+  * Pengumpulan UMP Consent sebelum `AdManager.initialize()`.
+  * Sinkronisasi locale reaktif via `AppCompatDelegate.setApplicationLocales`.
+  * Tema Compose reaktif via `LespriTheme(appTheme)`.
+  * Listener otomatis `NavController.addOnDestinationChangedListener` untuk `FirebaseAnalytics.Event.SCREEN_VIEW`.
 
 ---
 

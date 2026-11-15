@@ -152,7 +152,7 @@ Catatan:
 | P21 | Impor CSV | Drawer: Impor CSV | Pilih jenis data/file, mapping kolom, preview, deteksi baris invalid/duplikat, konfirmasi import | P02 atau halaman daftar terkait |
 | P22 | Ekspor Data | Drawer: Ekspor Data | Pilih data yang diekspor, rentang data bila relevan, hasil file CSV | Kembali ke halaman asal |
 | P23 | Backup & Restore | Drawer: Backup & Restore | Buat backup JSON (kompresi GZIP opsional), pilih file backup, validasi, konfirmasi restore | Kembali ke halaman asal |
-| P24 | Pengaturan | Drawer: Pengaturan | Profil bimbel, bahasa Indonesia/English, preferensi pengingat, info penyimpanan lokal, privasi, versi aplikasi | Halaman terkait |
+| P24 | Pengaturan | Drawer: Pengaturan | Profil bimbel, preferensi bahasa (Auto OS / ID / EN) & tema (Sistem / Terang / Gelap), iklan & notifikasi, legalitas & info (versi aplikasi, tautan kebijakan privasi, dan form persetujuan GDPR UMP) | Halaman terkait |
 
 ### 2.8 Halaman yang bukan screen tersendiri
 
@@ -192,10 +192,9 @@ Lespri
     │   └── Backup & Restore
     └── Pengaturan
         ├── Profil Bimbel
-        ├── Bahasa
-        ├── Pengingat / Notifikasi
-        ├── Privasi
-        └── Tentang Lespri
+        ├── Preferensi Aplikasi (Bahasa & Tema Tampilan)
+        ├── Iklan & Notifikasi (Banner Switch & Threshold Sesi Rendah)
+        └── Legalitas & Informasi (Versi Aplikasi, Kebijakan Privasi, dan Persetujuan GDPR UMP)
 ```
 
 ---

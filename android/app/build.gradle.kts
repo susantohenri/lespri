@@ -6,6 +6,7 @@ plugins {
     alias(libs.plugins.hilt)
     alias(libs.plugins.ksp)
     alias(libs.plugins.google.services)
+    alias(libs.plugins.firebase.crashlytics)
 }
 
 android {
@@ -70,6 +71,7 @@ android {
 dependencies {
     // Core AndroidX
     implementation(libs.androidx.core.ktx)
+    implementation(libs.androidx.appcompat)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.lifecycle.viewmodel.compose)
     implementation(libs.androidx.lifecycle.runtime.compose)
@@ -103,11 +105,14 @@ dependencies {
     // Serialization — for JSON backup/restore
     implementation(libs.kotlinx.serialization.json)
 
-    // AdMob
+    // AdMob & Consent (UMP)
     implementation(libs.play.services.ads)
+    implementation(libs.user.messaging.platform)
 
-    // Firebase BOM + Remote Config
+    // Firebase BOM + Analytics + Crashlytics + Remote Config
     implementation(platform(libs.firebase.bom))
+    implementation(libs.firebase.analytics)
+    implementation(libs.firebase.crashlytics)
     implementation(libs.firebase.config.ktx)
 
     // --- Testing ---

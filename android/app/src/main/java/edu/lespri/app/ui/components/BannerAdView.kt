@@ -116,6 +116,11 @@ private class BannerAdViewHolder(
         adView = AdView(context).apply {
             adUnitId = adManager.bannerAdUnitId
             setAdSize(AdSize.BANNER)
+            onPaidEventListener = adManager.createPaidEventListener(
+                adUnitId = adManager.bannerAdUnitId,
+                format = "BANNER",
+                adSourceNameProvider = { responseInfo?.loadedAdapterResponseInfo?.adSourceName }
+            )
             adListener = object : AdListener() {
                 override fun onAdFailedToLoad(adError: LoadAdError) {
                     // Silent fail — iklan tes mungkin belum siap, tidak mengganggu UX

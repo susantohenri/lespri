@@ -2,7 +2,9 @@ package edu.lespri.app.util
 
 import android.app.Application
 import android.content.Context
+import com.google.android.gms.ads.AdValue
 import com.google.android.gms.ads.MobileAds
+import com.google.android.gms.ads.OnPaidEventListener
 import com.google.android.gms.ads.RequestConfiguration
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig
 import edu.lespri.app.domain.model.LespriConstants
@@ -13,17 +15,19 @@ import javax.inject.Inject
 import javax.inject.Singleton
 
 /**
- * Manajer iklan AdMob dan integrasi Firebase Remote Config.
+ * Manajer iklan AdMob dan integrasi Firebase Remote Config & Analytics.
  *
  * Tanggung jawab:
- * - Inisialisasi MobileAds saat aplikasi pertama kali dijalankan
+ * - Inisialisasi MobileAds saat aplikasi pertama kali dijalankan (setelah GDPR consent)
  * - Menyediakan Banner Ad Unit ID (test ID untuk development)
  * - Membaca toggle iklan dari Remote Config / AppSetting (ADS_ENABLED)
  * - Menyediakan status apakah banner iklan boleh ditampilkan
+ * - Menangani OnPaidEventListener untuk pencatatan pendapatan iklan ke Analytics
  */
 @Singleton
 class AdManager @Inject constructor(
-    private val application: Application
+    private val application: Application,
+    private val analyticsLogger: AnalyticsLogger
 ) {
 
     private val _adsEnabled = MutableStateFlow(false)
@@ -81,6 +85,25 @@ class AdManager @Inject constructor(
      */
     fun updateAdsEnabled(enabled: Boolean) {
         _adsEnabled.value = enabled
+        analyticsLogger.setUserProperty("ads_enabled", if (enabled) "true" else "false")
+    }
+
+    /**
+     * Membuat [OnPaidEventListener] untuk format iklan apapun.
+     */
+    fun createPaidEventListener(
+        adUnitId: String,
+        format: String = "BANNER",
+        adSourceNameProvider: () -> String? = { null }
+    ): OnPaidEventListener {
+        return OnPaidEventListener { adValue ->
+            analyticsLogger.logAdImpression(
+                adValue = adValue,
+                adUnitId = adUnitId,
+                format = format,
+                adSourceName = adSourceNameProvider()
+            )
+        }
     }
 
     /**

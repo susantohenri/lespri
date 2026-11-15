@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Lespri</string>
+
+    <!-- Settings Screen -->
+    <string name="settings_title">Settings</string>
+    <string name="settings_subtitle">Bimbel application configuration</string>
+
+    <!-- Profile Section -->
+    <string name="section_profile">Bimbel Profile</string>
+    <string name="label_bimbel_name">Bimbel Name</string>
+    <string name="label_owner_name">Owner / Admin Name</string>
+    <string name="label_whatsapp_number">WhatsApp Number (E.164, e.g. +6281234567890)</string>
+
+    <!-- Preferences Section -->
+    <string name="section_preferences">Preferences</string>
+    <string name="label_language">Language</string>
+    <string name="language_system">System Default (Auto)</string>
+    <string name="language_id">Bahasa Indonesia</string>
+    <string name="language_en">English</string>
+
+    <string name="label_theme">Theme</string>
+    <string name="theme_system">System Default</string>
+    <string name="theme_light">Light Mode</string>
+    <string name="theme_dark">Dark Mode</string>
+
+    <!-- Ads & Notifications Section -->
+    <string name="section_ads_notifications">Ads &amp; Notifications</string>
+    <string name="label_show_banner_ads">Show Banner Ads</string>
+    <string name="desc_banner_ads">AdMob ads will be displayed at the bottom of the screen.</string>
+    <string name="label_low_session_threshold">Low Session Balance Threshold (sessions)</string>
+    <string name="desc_low_session_threshold">A warning will appear if a student\'s remaining package sessions is less than or equal to this value.</string>
+
+    <!-- Legal & Info Section -->
+    <string name="section_legal_info">Legal &amp; Information</string>
+    <string name="label_app_version">App Version</string>
+    <string name="label_privacy_policy">Privacy Policy</string>
+    <string name="desc_privacy_policy">Read our privacy policy regarding data collection and privacy practices.</string>
+    <string name="label_gdpr_consent">Privacy &amp; GDPR Consent Settings</string>
+    <string name="desc_gdpr_consent">Manage your data sharing and ad personalization preferences.</string>
+
+    <!-- Actions & Messages -->
+    <string name="action_save_settings">Save Settings</string>
+    <string name="msg_settings_saved">Settings saved successfully.</string>
+    <string name="action_open">Open</string>
+    <string name="action_manage">Manage</string>
+</resources>

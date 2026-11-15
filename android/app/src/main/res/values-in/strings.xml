@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Lespri</string>
+
+    <!-- Settings Screen -->
+    <string name="settings_title">Pengaturan</string>
+    <string name="settings_subtitle">Konfigurasi aplikasi bimbel</string>
+
+    <!-- Profile Section -->
+    <string name="section_profile">Profil Bimbel</string>
+    <string name="label_bimbel_name">Nama Bimbel</string>
+    <string name="label_owner_name">Nama Pemilik / Admin</string>
+    <string name="label_whatsapp_number">Nomor WhatsApp (E.164, contoh +6281234567890)</string>
+
+    <!-- Preferences Section -->
+    <string name="section_preferences">Preferensi Aplikasi</string>
+    <string name="label_language">Bahasa</string>
+    <string name="language_system">Otomatis (Sesuai Sistem)</string>
+    <string name="language_id">Bahasa Indonesia</string>
+    <string name="language_en">English</string>
+
+    <string name="label_theme">Tema Tampilan</string>
+    <string name="theme_system">Mengikuti Sistem</string>
+    <string name="theme_light">Mode Terang</string>
+    <string name="theme_dark">Mode Gelap</string>
+
+    <!-- Ads & Notifications Section -->
+    <string name="section_ads_notifications">Iklan &amp; Notifikasi</string>
+    <string name="label_show_banner_ads">Tampilkan Iklan Banner</string>
+    <string name="desc_banner_ads">Iklan AdMob akan ditampilkan di bagian bawah layar.</string>
+    <string name="label_low_session_threshold">Threshold Saldo Paket Rendah (sesi)</string>
+    <string name="desc_low_session_threshold">Peringatan akan muncul jika sisa sesi paket siswa kurang dari atau sama dengan nilai ini.</string>
+
+    <!-- Legal & Info Section -->
+    <string name="section_legal_info">Legalitas &amp; Informasi</string>
+    <string name="label_app_version">Versi Aplikasi</string>
+    <string name="label_privacy_policy">Kebijakan Privasi</string>
+    <string name="desc_privacy_policy">Baca kebijakan privasi terkait pengumpulan dan penggunaan data.</string>
+    <string name="label_gdpr_consent">Pengaturan Privasi &amp; Persetujuan GDPR</string>
+    <string name="desc_gdpr_consent">Kelola preferensi pembagian data dan personalisasi iklan Anda.</string>
+
+    <!-- Actions & Messages -->
+    <string name="action_save_settings">Simpan Pengaturan</string>
+    <string name="msg_settings_saved">Pengaturan berhasil disimpan.</string>
+    <string name="action_open">Buka</string>
+    <string name="action_manage">Kelola</string>
+</resources>

@@ -201,9 +201,20 @@ Lespri hadir untuk menyatukan proses operasional inti dalam satu aplikasi ringan
 - JSON untuk backup penuh.
 - Restore memerlukan konfirmasi dan tidak boleh merusak data lokal saat gagal.
 
-### FR-11: AdMob restrictions
+### FR-11: AdMob restrictions & Monetization Tracking
 - Iklan tidak boleh mengganggu input, attendance, pembayaran, atau backup/restore.
 - Tidak mengirim data personal ke ad network.
+- Pendapatan iklan dilacak secara presisi ke Firebase Analytics via `OnPaidEventListener`.
+
+### FR-12: Settings, Bilingual (i18n) & Theme
+- Pilihan bahasa bilingual (Bahasa Indonesia & English) dengan auto-detect OS via `AppCompatDelegate.setApplicationLocales`.
+- Mode tema tampilan reaktif: Mengikuti Sistem (Auto), Mode Terang (Light), dan Mode Gelap (Dark).
+- Informasi legalitas, versi aplikasi dinamis (`BuildConfig.VERSION_NAME`), dan tautan Kebijakan Privasi.
+
+### FR-13: Privacy, Consent & Analytics
+- Integrasi Google UMP (User Messaging Platform) SDK untuk alur persetujuan GDPR (EEA/UK).
+- Form opsi privasi dapat dibuka kembali kapan saja dari menu Pengaturan.
+- Pelacakan navigasi layar otomatis (`SCREEN_VIEW`) dan pelaporan error non-fatal ke Firebase Crashlytics.
 
 ## 11. Risks and Mitigations
 
