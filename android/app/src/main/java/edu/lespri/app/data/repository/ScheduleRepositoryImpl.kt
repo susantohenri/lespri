@@ -216,7 +216,21 @@ class ScheduleRepositoryImpl @Inject constructor(
                     }
                 }
 
-                // 3. Batalkan sesi secara resmi
+                // 3. Batalkan tagihan per sesi yang belum dibayar untuk sesi ini
+                for (record in existingAttendance) {
+                    val enrollment = classDao.getEnrollmentById(record.enrollmentId)
+                    if (enrollment != null && enrollment.billingType == BillingType.PER_SESSION.name) {
+                        val charges = financeDao.getChargesForEnrollmentSync(enrollment.id)
+                        val chargeToCancel = charges.firstOrNull {
+                            it.periodStart == sessionId && it.status == ChargeStatus.UNPAID.name
+                        }
+                        if (chargeToCancel != null) {
+                            financeDao.updateCharge(chargeToCancel.copy(status = ChargeStatus.CANCELLED.name))
+                        }
+                    }
+                }
+
+                // 4. Batalkan sesi secara resmi
                 scheduleDao.cancelSession(sessionId)
             }
         }

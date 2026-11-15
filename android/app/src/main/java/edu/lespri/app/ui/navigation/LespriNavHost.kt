@@ -21,6 +21,15 @@ import edu.lespri.app.ui.finance.ChargeDetailScreen
 import edu.lespri.app.ui.finance.FinanceOverviewScreen
 import edu.lespri.app.ui.finance.PaymentReceiptScreen
 import edu.lespri.app.ui.finance.RecordPaymentScreen
+import edu.lespri.app.ui.attendance.AttendanceSheetScreen
+import edu.lespri.app.ui.backup.BackupRestoreScreen
+import edu.lespri.app.ui.csv.CsvExportScreen
+import edu.lespri.app.ui.csv.CsvImportScreen
+import edu.lespri.app.ui.schedule.ScheduleAgendaScreen
+import edu.lespri.app.ui.schedule.SessionDetailScreen
+import edu.lespri.app.ui.schedule.SessionFormScreen
+import edu.lespri.app.ui.settings.SettingsScreen
+
 import edu.lespri.app.ui.tutor.TutorFormScreen
 import edu.lespri.app.ui.tutor.TutorListScreen
 
@@ -53,8 +62,8 @@ fun LespriNavHost(
         composable(NavRoutes.Dashboard.route) {
             DashboardScreen(
                 onNavigateToRoute = { route -> navController.navigate(route) },
-                onNavigateToSession = {
-                    // Detail sesi baru tersedia pada Milestone 5.
+                onNavigateToSession = { sessionId ->
+                    navController.navigate(NavRoutes.SessionDetail.createRoute(sessionId))
                 }
             )
         }
@@ -199,14 +208,15 @@ fun LespriNavHost(
 
         // --- P12: Jadwal & Agenda (Milestone 5) ---
         composable(NavRoutes.Schedule.route) {
-            PlaceholderScreen(
-                title = "Jadwal & Agenda",
-                route = NavRoutes.Schedule.route,
-                navController = navController
+            ScheduleAgendaScreen(
+                onNavigateToRoute = { route -> navController.navigate(route) },
+                onNavigateToSession = { sessionId ->
+                    navController.navigate(NavRoutes.SessionDetail.createRoute(sessionId))
+                }
             )
         }
 
-        // --- P13-P15: Form, Detail Sesi & Presensi (Milestone 5) ---
+        // --- P13: Form Sesi (Milestone 5) ---
         composable(
             route = NavRoutes.SessionForm.route,
             arguments = listOf(
@@ -222,33 +232,34 @@ fun LespriNavHost(
                 }
             )
         ) {
-            PlaceholderScreen(
-                title = "Form Jadwal",
-                route = NavRoutes.SessionForm.route,
-                navController = navController,
-                onBack = { navController.popBackStack() }
+            SessionFormScreen(
+                onBack = { navController.popBackStack() },
+                onSaved = { navController.popBackStack() }
             )
         }
+        // --- P14: Detail Sesi (Milestone 5) ---
         composable(
             route = NavRoutes.SessionDetail.route,
             arguments = listOf(navArgument("sessionId") { type = NavType.StringType })
         ) {
-            PlaceholderScreen(
-                title = "Detail Sesi",
-                route = NavRoutes.SessionDetail.route,
-                navController = navController,
-                onBack = { navController.popBackStack() }
+            SessionDetailScreen(
+                onBack = { navController.popBackStack() },
+                onNavigateToAttendance = { sessionId ->
+                    navController.navigate(NavRoutes.AttendanceSheet.createRoute(sessionId))
+                },
+                onNavigateToEdit = { sessionId ->
+                    navController.navigate(NavRoutes.SessionForm.createRoute(sessionId = sessionId))
+                }
             )
         }
+        // --- P15: Lembar Presensi (Milestone 5) ---
         composable(
             route = NavRoutes.AttendanceSheet.route,
             arguments = listOf(navArgument("sessionId") { type = NavType.StringType })
         ) {
-            PlaceholderScreen(
-                title = "Pencatatan Kehadiran",
-                route = NavRoutes.AttendanceSheet.route,
-                navController = navController,
-                onBack = { navController.popBackStack() }
+            AttendanceSheetScreen(
+                onBack = { navController.popBackStack() },
+                onSaved = { navController.popBackStack() }
             )
         }
 
@@ -296,17 +307,29 @@ fun LespriNavHost(
         composable(NavRoutes.Reports.route) {
             PlaceholderScreen(title = "Laporan Operasional", route = NavRoutes.Reports.route, navController = navController)
         }
+        // --- P21: Impor CSV (Milestone 7) ---
         composable(NavRoutes.CsvImport.route) {
-            PlaceholderScreen(title = "Impor CSV", route = NavRoutes.CsvImport.route, navController = navController)
+            CsvImportScreen(
+                onNavigateToRoute = { route -> navController.navigate(route) }
+            )
         }
+        // --- P22: Ekspor CSV (Milestone 7) ---
         composable(NavRoutes.CsvExport.route) {
-            PlaceholderScreen(title = "Ekspor CSV", route = NavRoutes.CsvExport.route, navController = navController)
+            CsvExportScreen(
+                onNavigateToRoute = { route -> navController.navigate(route) }
+            )
         }
+        // --- P23: Backup & Restore (Milestone 7) ---
         composable(NavRoutes.BackupRestore.route) {
-            PlaceholderScreen(title = "Backup & Restore", route = NavRoutes.BackupRestore.route, navController = navController)
+            BackupRestoreScreen(
+                onNavigateToRoute = { route -> navController.navigate(route) }
+            )
         }
+        // --- P24: Pengaturan (Milestone 7) ---
         composable(NavRoutes.Settings.route) {
-            PlaceholderScreen(title = "Pengaturan", route = NavRoutes.Settings.route, navController = navController)
+            SettingsScreen(
+                onNavigateToRoute = { route -> navController.navigate(route) }
+            )
         }
     }
 }

@@ -36,6 +36,11 @@
             </intent-filter>
         </activity>
 
+        <!-- Alarm Receiver untuk menangani notifikasi lokal tepat waktu -->
+        <receiver
+            android:name=".notification.AlarmReceiver"
+            android:exported="false" />
+
         <!-- Boot Receiver untuk menjadwalkan ulang notifikasi setelah reboot -->
         <receiver
             android:name=".notification.BootReceiver"

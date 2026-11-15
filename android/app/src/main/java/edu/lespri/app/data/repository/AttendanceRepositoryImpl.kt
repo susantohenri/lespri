@@ -97,6 +97,15 @@ class AttendanceRepositoryImpl @Inject constructor(
                                             createdAt = now
                                         )
                                         financeDao.insertCharge(charge)
+                                    } else if (oldStatus == AttendanceStatus.PRESENT.name && newStatus != AttendanceStatus.PRESENT.name) {
+                                        // Batalkan tagihan per sesi yang belum dibayar terkait sesi ini
+                                        val existingCharges = financeDao.getChargesForEnrollmentSync(enrollment.id)
+                                        val sessionCharge = existingCharges.firstOrNull {
+                                            it.periodStart == sessionId && it.status == ChargeStatus.UNPAID.name
+                                        }
+                                        if (sessionCharge != null) {
+                                            financeDao.updateCharge(sessionCharge.copy(status = ChargeStatus.CANCELLED.name))
+                                        }
                                     }
                                 }
                             }

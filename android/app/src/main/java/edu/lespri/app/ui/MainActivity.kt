@@ -3,8 +3,13 @@ package edu.lespri.app.ui
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
 import androidx.navigation.compose.rememberNavController
 import dagger.hilt.android.AndroidEntryPoint
 import edu.lespri.app.data.local.dao.SettingDao
@@ -27,19 +32,30 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             LespriTheme {
-                val ownerProfile by settingDao.getOwnerProfile().collectAsState(initial = null)
+                val ownerProfileState = settingDao.getOwnerProfile().collectAsState(initial = "LOADING")
                 val navController = rememberNavController()
 
-                val startDestination = if (ownerProfile != null && ownerProfile?.businessName?.isNotBlank() == true) {
-                    NavRoutes.Dashboard.route
-                } else {
-                    NavRoutes.FirstLaunchSetup.route
-                }
+                when (val profile = ownerProfileState.value) {
+                    "LOADING" -> {
+                        // Tampilkan loading sebentar saat database Room sedang query di thread IO
+                        Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                            CircularProgressIndicator()
+                        }
+                    }
+                    else -> {
+                        val owner = profile as? edu.lespri.app.data.local.entity.OwnerProfileEntity
+                        val startDestination = if (owner != null && owner.businessName.isNotBlank()) {
+                            NavRoutes.Dashboard.route
+                        } else {
+                            NavRoutes.FirstLaunchSetup.route
+                        }
 
-                LespriNavHost(
-                    navController = navController,
-                    startDestination = startDestination
-                )
+                        LespriNavHost(
+                            navController = navController,
+                            startDestination = startDestination
+                        )
+                    }
+                }
             }
         }
     }

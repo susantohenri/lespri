@@ -22,10 +22,17 @@ import edu.lespri.app.ui.MainActivity
  */
 object ReminderScheduler {
 
-    private const val CHANNEL_SCHEDULE = "schedule_reminder"
+    internal const val CHANNEL_SCHEDULE = "schedule_reminder"
     private const val CHANNEL_BILLING = "billing_reminder"
     private const val CHANNEL_ATTENDANCE = "attendance_reminder"
     private const val CHANNEL_PACKAGE = "package_reminder"
+
+    internal const val EXTRA_TITLE = "extra_title"
+    internal const val EXTRA_MESSAGE = "extra_message"
+    internal const val EXTRA_CHANNEL_ID = "extra_channel_id"
+    internal const val EXTRA_REQUEST_ID = "extra_request_id"
+
+    private const val ACTION_SHOW_REMINDER = "edu.lespri.app.action.SHOW_REMINDER"
 
     private const val REQUEST_CODE_BASE = 1000
 
@@ -88,8 +95,14 @@ object ReminderScheduler {
         className: String,
         startTime: String
     ) {
-        val intent = createNotificationIntent(context, sessionId, "Sesi $className dimulai pukul $startTime")
-        val pendingIntent = PendingIntent.getActivity(
+        val intent = createNotificationIntent(
+            context = context,
+            channelId = CHANNEL_SCHEDULE,
+            title = "Pengingat Jadwal",
+            message = "Sesi $className dimulai pukul $startTime",
+            requestId = sessionId
+        )
+        val pendingIntent = PendingIntent.getBroadcast(
             context,
             hashRequestId("session_$sessionId"),
             intent,
@@ -120,8 +133,14 @@ object ReminderScheduler {
         amount: Long
     ) {
         val amountStr = formatRupiah(amount)
-        val intent = createNotificationIntent(context, chargeId, "Tagihan $studentName: $amountStr")
-        val pendingIntent = PendingIntent.getActivity(
+        val intent = createNotificationIntent(
+            context = context,
+            channelId = CHANNEL_BILLING,
+            title = "Pengingat Tagihan",
+            message = "Tagihan $studentName: $amountStr",
+            requestId = chargeId
+        )
+        val pendingIntent = PendingIntent.getBroadcast(
             context,
             hashRequestId("billing_$chargeId"),
             intent,
@@ -145,8 +164,14 @@ object ReminderScheduler {
         sessionId: String,
         className: String
     ) {
-        val intent = createNotificationIntent(context, sessionId, "Catat kehadiran untuk $className")
-        val pendingIntent = PendingIntent.getActivity(
+        val intent = createNotificationIntent(
+            context = context,
+            channelId = CHANNEL_ATTENDANCE,
+            title = "Pengingat Kehadiran",
+            message = "Catat kehadiran untuk $className",
+            requestId = sessionId
+        )
+        val pendingIntent = PendingIntent.getBroadcast(
             context,
             hashRequestId("attendance_$sessionId"),
             intent,
@@ -172,11 +197,13 @@ object ReminderScheduler {
         remainingSessions: Int
     ) {
         val intent = createNotificationIntent(
-            context,
-            enrollmentId,
-            "Saldo paket $studentName tersisa $remainingSessions sesi"
+            context = context,
+            channelId = CHANNEL_PACKAGE,
+            title = "Peringatan Paket",
+            message = "Saldo paket $studentName tersisa $remainingSessions sesi",
+            requestId = enrollmentId
         )
-        val pendingIntent = PendingIntent.getActivity(
+        val pendingIntent = PendingIntent.getBroadcast(
             context,
             hashRequestId("package_$enrollmentId"),
             intent,
@@ -195,8 +222,14 @@ object ReminderScheduler {
      * Batalkan notifikasi yang dijadwalkan.
      */
     fun cancelReminder(context: Context, requestId: String) {
-        val intent = createNotificationIntent(context, requestId, "")
-        val pendingIntent = PendingIntent.getActivity(
+        val intent = createNotificationIntent(
+            context = context,
+            channelId = CHANNEL_SCHEDULE,
+            title = "",
+            message = "",
+            requestId = requestId
+        )
+        val pendingIntent = PendingIntent.getBroadcast(
             context,
             hashRequestId(requestId),
             intent,
@@ -211,9 +244,15 @@ object ReminderScheduler {
      * Batalkan semua notifikasi yang dijadwalkan.
      */
     fun cancelAllReminders(context: Context) {
-        val intent = createNotificationIntent(context, "", "")
+        val intent = createNotificationIntent(
+            context = context,
+            channelId = CHANNEL_SCHEDULE,
+            title = "",
+            message = "",
+            requestId = ""
+        )
         for (code in REQUEST_CODE_BASE until REQUEST_CODE_BASE + 10000) {
-            val pendingIntent = PendingIntent.getActivity(
+            val pendingIntent = PendingIntent.getBroadcast(
                 context,
                 code,
                 intent,
@@ -261,14 +300,17 @@ object ReminderScheduler {
 
     private fun createNotificationIntent(
         context: Context,
-        requestId: String,
-        message: String
+        channelId: String,
+        title: String,
+        message: String,
+        requestId: String
     ): Intent {
-        return Intent(context, MainActivity::class.java).apply {
-            action = Intent.ACTION_VIEW
-            putExtra("lespri_reminder_id", requestId)
-            putExtra("lespri_reminder_message", message)
-            flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+        return Intent(context, AlarmReceiver::class.java).apply {
+            action = ACTION_SHOW_REMINDER
+            putExtra(EXTRA_CHANNEL_ID, channelId)
+            putExtra(EXTRA_TITLE, title)
+            putExtra(EXTRA_MESSAGE, message)
+            putExtra(EXTRA_REQUEST_ID, requestId)
         }
     }
 

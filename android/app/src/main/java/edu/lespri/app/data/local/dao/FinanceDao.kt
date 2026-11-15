@@ -43,6 +43,13 @@ interface FinanceDao {
     fun getChargesForEnrollment(enrollmentId: String): Flow<List<ChargeEntity>>
 
     /**
+     * Ambil semua tagihan satu enrollment secara langsung (suspend, bukan Flow).
+     * Digunakan di dalam @Transaction untuk reversal/cascade pembatalan tagihan.
+     */
+    @Query("SELECT * FROM charges WHERE enrollment_id = :enrollmentId ORDER BY created_at DESC")
+    suspend fun getChargesForEnrollmentSync(enrollmentId: String): List<ChargeEntity>
+
+    /**
      * Observasi detail satu tagihan berdasarkan ID.
      */
     @Query("SELECT * FROM charges WHERE id = :chargeId")
