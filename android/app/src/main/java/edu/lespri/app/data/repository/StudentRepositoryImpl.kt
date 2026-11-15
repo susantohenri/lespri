@@ -4,6 +4,7 @@ import edu.lespri.app.data.local.dao.StudentDao
 import edu.lespri.app.data.mapper.toDomain
 import edu.lespri.app.data.mapper.toEntity
 import edu.lespri.app.domain.model.Student
+import edu.lespri.app.domain.model.StudentStatus
 import edu.lespri.app.domain.repository.StudentRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
@@ -24,6 +25,12 @@ class StudentRepositoryImpl @Inject constructor(
         }
     }
 
+    override fun getStudentsByStatus(status: StudentStatus): Flow<List<Student>> {
+        return studentDao.getStudentsByStatus(status.name).map { entities ->
+            entities.map { it.toDomain() }
+        }
+    }
+
     override fun getStudent(id: String): Flow<Student?> {
         return studentDao.getStudentById(id).map { entity ->
             entity?.toDomain()
@@ -37,8 +44,12 @@ class StudentRepositoryImpl @Inject constructor(
     }
 
     override suspend fun saveStudent(student: Student): Result<Unit> {
+        val trimmedName = student.name.trim()
+        if (trimmedName.isEmpty()) {
+            return Result.failure(IllegalArgumentException("Nama siswa wajib diisi"))
+        }
         return runCatching {
-            studentDao.upsertStudent(student.toEntity())
+            studentDao.upsertStudent(student.copy(name = trimmedName).toEntity())
         }
     }
 

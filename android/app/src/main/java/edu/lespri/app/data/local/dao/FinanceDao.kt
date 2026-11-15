@@ -89,6 +89,35 @@ interface FinanceDao {
     fun getMonthlyRevenue(monthPrefix: String): Flow<Long>
 
     /**
+     * Hitung sisa tagihan (amount - total pembayaran) untuk satu enrollment.
+     * COALESCE memastikan hasil 0 jika tidak ada tagihan/pembayaran.
+     */
+    @Query("""
+        SELECT COALESCE(SUM(
+            c.amount - COALESCE((SELECT SUM(p.amount) FROM payments p WHERE p.charge_id = c.id), 0)
+        ), 0)
+        FROM charges c
+        WHERE c.enrollment_id = :enrollmentId
+        AND c.status NOT IN ('CANCELLED', 'PAID')
+    """)
+    suspend fun getOutstandingForEnrollment(enrollmentId: String): Long
+
+    /**
+     * Hitung total sisa tagihan seluruh enrollment aktif milik seorang siswa.
+     */
+    @Query("""
+        SELECT COALESCE(SUM(
+            c.amount - COALESCE((SELECT SUM(p.amount) FROM payments p WHERE p.charge_id = c.id), 0)
+        ), 0)
+        FROM charges c
+        INNER JOIN enrollments e ON c.enrollment_id = e.id
+        WHERE e.student_id = :studentId
+        AND e.status = 'ACTIVE'
+        AND c.status NOT IN ('CANCELLED', 'PAID')
+    """)
+    suspend fun getOutstandingForStudent(studentId: String): Long
+
+    /**
      * Ambil semua tagihan untuk backup JSON.
      */
     @Query("SELECT * FROM charges ORDER BY created_at ASC")

@@ -10,8 +10,10 @@ import kotlinx.coroutines.flow.Flow
  */
 interface ClassRepository {
     fun getClasses(): Flow<List<ClassGroup>>
+    fun getClassesByStatus(status: String): Flow<List<ClassGroup>>
     fun getClassDetail(id: String): Flow<ClassGroupDetail?>
     suspend fun saveClass(classGroup: ClassGroup): Result<Unit>
+    suspend fun archiveClass(id: String): Result<Unit>
     suspend fun enrollStudent(enrollment: Enrollment): Result<Unit>
     suspend fun removeEnrollment(enrollmentId: String): Result<Unit>
 }

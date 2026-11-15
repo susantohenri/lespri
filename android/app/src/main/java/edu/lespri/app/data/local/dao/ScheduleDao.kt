@@ -78,6 +78,22 @@ interface ScheduleDao {
     fun getSessionsInRange(startDate: String, endDate: String): Flow<List<LessonSessionEntity>>
 
     /**
+     * Observasi sesi sebuah kelas dalam rentang tanggal [startDate, endDate] (inklusif).
+     * Digunakan untuk preview jadwal pada ClassDetailScreen (P08).
+     */
+    @Query("""
+        SELECT * FROM lesson_sessions 
+        WHERE class_id = :classId 
+        AND session_date >= :startDate AND session_date <= :endDate 
+        ORDER BY session_date ASC, start_time ASC
+    """)
+    fun getSessionsForClassInRange(
+        classId: String,
+        startDate: String,
+        endDate: String
+    ): Flow<List<LessonSessionEntity>>
+
+    /**
      * Batch insert sesi hasil generate dari ScheduleRule.
      * OnConflictStrategy.IGNORE: slot yang sudah ada diabaikan tanpa error.
      * Return: list rowId hasil insert (negatif = diabaikan).
@@ -110,4 +126,8 @@ interface ScheduleDao {
      */
     @Query("SELECT * FROM lesson_sessions ORDER BY session_date ASC, start_time ASC")
     suspend fun getAllSessionsForBackup(): List<LessonSessionEntity>
+
+    /** Ambil semua aturan jadwal untuk backup JSON. */
+    @Query("SELECT * FROM schedule_rules ORDER BY weekday ASC, start_time ASC")
+    suspend fun getAllScheduleRulesForBackup(): List<ScheduleRuleEntity>
 }

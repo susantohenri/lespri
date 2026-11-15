@@ -50,6 +50,34 @@ data class StudentListItem(
 )
 
 /**
+ * Ringkasan kelas yang diikuti seorang siswa untuk StudentDetailScreen (P05).
+ */
+data class StudentClassItem(
+    val enrollmentId: String,
+    val classId: String,
+    val className: String,
+    val classType: ClassType,
+    val subject: String? = null,
+    val tutorName: String? = null,
+    val billingType: BillingType,
+    val feeAmount: Long,
+    val remainingPackageSessions: Int? = null,
+    val currentDebt: Long = 0L
+)
+
+/**
+ * Sesi mendatang yang relevan bagi seorang siswa (StudentDetailScreen P05).
+ */
+data class StudentUpcomingSessionItem(
+    val sessionId: String,
+    val classId: String,
+    val className: String,
+    val sessionDate: String,
+    val startTime: String,
+    val status: SessionStatus
+)
+
+/**
  * Item baris ringkas untuk daftar tutor pada TutorListScreen (P09).
  */
 data class TutorListItem(
@@ -71,6 +99,8 @@ data class ClassListItem(
     val subject: String? = null,
     val tutorName: String? = null,
     val enrolledStudentsCount: Int = 0,
+    val nextSessionDate: String? = null,
+    val nextSessionTime: String? = null,
     val status: String = "ACTIVE"
 )
 
@@ -85,6 +115,15 @@ data class EnrolledStudentItem(
     val feeAmount: Long,
     val remainingPackageSessions: Int? = null,
     val currentDebt: Long = 0L
+)
+
+/**
+ * Item sesi pada agenda jadwal (P12) yang sudah diperkaya nama kelas dan tutor.
+ */
+data class AgendaSessionItem(
+    val session: LessonSession,
+    val className: String,
+    val tutorName: String? = null
 )
 
 /**

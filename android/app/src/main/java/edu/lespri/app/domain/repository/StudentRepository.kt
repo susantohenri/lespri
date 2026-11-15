@@ -1,6 +1,7 @@
 package edu.lespri.app.domain.repository
 
 import edu.lespri.app.domain.model.Student
+import edu.lespri.app.domain.model.StudentStatus
 import kotlinx.coroutines.flow.Flow
 
 /**
@@ -8,6 +9,7 @@ import kotlinx.coroutines.flow.Flow
  */
 interface StudentRepository {
     fun getActiveStudents(): Flow<List<Student>>
+    fun getStudentsByStatus(status: StudentStatus): Flow<List<Student>>
     fun getStudent(id: String): Flow<Student?>
     fun searchStudents(query: String): Flow<List<Student>>
     suspend fun saveStudent(student: Student): Result<Unit>

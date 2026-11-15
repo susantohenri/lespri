@@ -16,10 +16,12 @@ import edu.lespri.app.domain.model.ChargeStatus
 import edu.lespri.app.domain.model.ChargeType
 import edu.lespri.app.domain.model.ClassGroup
 import edu.lespri.app.domain.model.ClassGroupDetail
+import edu.lespri.app.domain.model.ClassType
 import edu.lespri.app.domain.model.EnrolledStudentItem
 import edu.lespri.app.domain.model.Enrollment
 import edu.lespri.app.domain.model.EnrollmentStatus
 import edu.lespri.app.domain.model.LedgerEntryType
+import edu.lespri.app.domain.model.LespriConstants
 import edu.lespri.app.domain.repository.ClassRepository
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
@@ -50,8 +52,10 @@ class ClassRepositoryImpl @Inject constructor(
     private val financeDao: FinanceDao
 ) : ClassRepository {
 
-    override fun getClasses(): Flow<List<ClassGroup>> {
-        return classDao.getClassesByStatus("ACTIVE").map { list ->
+    override fun getClasses(): Flow<List<ClassGroup>> = getClassesByStatus("ACTIVE")
+
+    override fun getClassesByStatus(status: String): Flow<List<ClassGroup>> {
+        return classDao.getClassesByStatus(status).map { list ->
             list.map { it.toDomain() }
         }
     }
@@ -68,7 +72,7 @@ class ClassRepositoryImpl @Inject constructor(
                 combine(
                     tutorDao.getTutorById(classEntity.tutorId ?: ""),
                     classDao.getActiveEnrollmentsForClass(id),
-                    scheduleDao.getSessionsInRange(today, thirtyDaysLater)
+                    scheduleDao.getSessionsForClassInRange(id, today, thirtyDaysLater)
                 ) { tutorEntity, enrollments, sessions ->
                     val assignedTutor = tutorEntity?.toDomain()
                     val upcoming = sessions.map { it.toDomain() }
@@ -112,50 +116,129 @@ class ClassRepositoryImpl @Inject constructor(
     }
 
     override suspend fun saveClass(classGroup: ClassGroup): Result<Unit> {
+        val trimmedName = classGroup.name.trim()
+        if (trimmedName.isEmpty()) {
+            return Result.failure(IllegalArgumentException("Nama kelas wajib diisi"))
+        }
         return runCatching {
-            classDao.upsertClass(classGroup.toEntity())
+            database.withTransaction {
+                // Invarian: kelas privat hanya boleh memiliki maksimal satu siswa aktif.
+                if (classGroup.classType == ClassType.PRIVATE) {
+                    val activeEnrollments = classDao.countActiveEnrollmentsForClass(classGroup.id)
+                    if (activeEnrollments > 1) {
+                        throw IllegalStateException("Kelas privat hanya boleh memiliki satu siswa aktif")
+                    }
+                }
+
+                classDao.upsertClass(
+                    classGroup.copy(
+                        name = trimmedName,
+                        subject = classGroup.subject?.trim()?.takeIf { it.isNotEmpty() },
+                        tutorId = classGroup.tutorId?.takeIf { it.isNotBlank() },
+                        locationNote = classGroup.locationNote?.trim()?.takeIf { it.isNotEmpty() }
+                    ).toEntity()
+                )
+            }
+        }
+    }
+
+    override suspend fun archiveClass(id: String): Result<Unit> {
+        return runCatching {
+            classDao.archiveClass(id)
         }
     }
 
     override suspend fun enrollStudent(enrollment: Enrollment): Result<Unit> {
+        if (enrollment.feeAmount < 0) {
+            return Result.failure(IllegalArgumentException("Nominal biaya tidak boleh negatif"))
+        }
+
+        when (enrollment.billingType) {
+            BillingType.MONTHLY -> {
+                val dueDay = enrollment.dueDay
+                if (dueDay != null && dueDay !in 1..28) {
+                    return Result.failure(IllegalArgumentException("Tanggal jatuh tempo harus 1–28"))
+                }
+            }
+            BillingType.PACKAGE -> {
+                val sessions = enrollment.packageSessionCount
+                    ?: return Result.failure(IllegalArgumentException("Jumlah sesi paket wajib diisi"))
+                if (sessions !in LespriConstants.MIN_SESSIONS_PER_PACKAGE..LespriConstants.MAX_SESSIONS_PER_PACKAGE) {
+                    return Result.failure(IllegalArgumentException("Jumlah sesi paket harus 1–100"))
+                }
+            }
+            BillingType.PER_SESSION -> Unit
+        }
+
         return runCatching {
             database.withTransaction {
-                classDao.insertEnrollment(enrollment.toEntity())
+                val classEntity = classDao.getClassById(enrollment.classId).firstOrNull()
+                    ?: throw IllegalStateException("Kelas tidak ditemukan")
+                if (classEntity.status != "ACTIVE") {
+                    throw IllegalStateException("Kelas sudah tidak aktif")
+                }
+
+                val studentEntity = studentDao.getStudentById(enrollment.studentId).firstOrNull()
+                    ?: throw IllegalStateException("Siswa tidak ditemukan")
+                if (studentEntity.status != "ACTIVE") {
+                    throw IllegalStateException("Siswa sudah tidak aktif")
+                }
+
+                if (classDao.countActiveEnrollmentForStudentAndClass(
+                        enrollment.studentId,
+                        enrollment.classId
+                    ) > 0
+                ) {
+                    throw IllegalStateException("Siswa sudah terdaftar di kelas ini")
+                }
+
+                if (classEntity.classType == ClassType.PRIVATE.name &&
+                    classDao.countActiveEnrollmentsForClass(enrollment.classId) >= 1
+                ) {
+                    throw IllegalStateException("Kelas privat hanya boleh memiliki satu siswa aktif")
+                }
+
+                val normalized = when (enrollment.billingType) {
+                    BillingType.MONTHLY -> enrollment.copy(packageSessionCount = null)
+                    BillingType.PACKAGE -> enrollment.copy(dueDay = null)
+                    BillingType.PER_SESSION -> enrollment.copy(dueDay = null, packageSessionCount = null)
+                }
+                classDao.insertEnrollment(normalized.toEntity())
 
                 // Invarian: Paket sesi meng-insert PackageLedger dan tagihan awal
-                if (enrollment.billingType == BillingType.PACKAGE &&
-                    enrollment.packageSessionCount != null &&
-                    enrollment.packageSessionCount > 0
+                if (normalized.billingType == BillingType.PACKAGE &&
+                    normalized.packageSessionCount != null &&
+                    normalized.packageSessionCount > 0
                 ) {
                     val ledgerEntry = PackageLedgerEntity(
                         id = UUID.randomUUID().toString(),
-                        enrollmentId = enrollment.id,
+                        enrollmentId = normalized.id,
                         sessionId = null,
-                        deltaSessions = enrollment.packageSessionCount,
+                        deltaSessions = normalized.packageSessionCount,
                         reason = LedgerEntryType.PACKAGE_PURCHASE.name,
                         createdAt = System.currentTimeMillis()
                     )
                     financeDao.insertLedgerEntry(ledgerEntry)
 
-                    if (enrollment.feeAmount > 0) {
+                    if (normalized.feeAmount > 0) {
                         val charge = ChargeEntity(
                             id = UUID.randomUUID().toString(),
-                            enrollmentId = enrollment.id,
+                            enrollmentId = normalized.id,
                             chargeType = ChargeType.SESSION_PACKAGE.name,
-                            amount = enrollment.feeAmount,
+                            amount = normalized.feeAmount,
                             status = ChargeStatus.UNPAID.name,
                             createdAt = System.currentTimeMillis()
                         )
                         financeDao.insertCharge(charge)
                     }
-                } else if (enrollment.billingType == BillingType.MONTHLY && enrollment.feeAmount > 0) {
+                } else if (normalized.billingType == BillingType.MONTHLY && normalized.feeAmount > 0) {
                     val currentMonth = SimpleDateFormat("yyyy-MM", Locale.US).format(Date())
                     val charge = ChargeEntity(
                         id = UUID.randomUUID().toString(),
-                        enrollmentId = enrollment.id,
+                        enrollmentId = normalized.id,
                         chargeType = ChargeType.MONTHLY_FEE.name,
                         periodStart = "$currentMonth-01",
-                        amount = enrollment.feeAmount,
+                        amount = normalized.feeAmount,
                         status = ChargeStatus.UNPAID.name,
                         createdAt = System.currentTimeMillis()
                     )

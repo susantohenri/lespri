@@ -4,6 +4,7 @@ import edu.lespri.app.data.local.dao.TutorDao
 import edu.lespri.app.data.mapper.toDomain
 import edu.lespri.app.data.mapper.toEntity
 import edu.lespri.app.domain.model.Tutor
+import edu.lespri.app.domain.model.TutorStatus
 import edu.lespri.app.domain.repository.TutorRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
@@ -24,6 +25,12 @@ class TutorRepositoryImpl @Inject constructor(
         }
     }
 
+    override fun getTutorsByStatus(status: TutorStatus): Flow<List<Tutor>> {
+        return tutorDao.getTutorsByStatus(status.name).map { entities ->
+            entities.map { it.toDomain() }
+        }
+    }
+
     override fun getTutor(id: String): Flow<Tutor?> {
         return tutorDao.getTutorById(id).map { entity ->
             entity?.toDomain()
@@ -31,8 +38,12 @@ class TutorRepositoryImpl @Inject constructor(
     }
 
     override suspend fun saveTutor(tutor: Tutor): Result<Unit> {
+        val trimmedName = tutor.name.trim()
+        if (trimmedName.isEmpty()) {
+            return Result.failure(IllegalArgumentException("Nama tutor wajib diisi"))
+        }
         return runCatching {
-            tutorDao.upsertTutor(tutor.toEntity())
+            tutorDao.upsertTutor(tutor.copy(name = trimmedName).toEntity())
         }
     }
 

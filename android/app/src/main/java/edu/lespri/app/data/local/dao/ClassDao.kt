@@ -66,6 +66,34 @@ interface ClassDao {
     fun getActiveEnrollmentsForStudent(studentId: String): Flow<List<EnrollmentEntity>>
 
     /**
+     * Hitung jumlah enrollment aktif pada sebuah kelas.
+     * Dipakai untuk invarian kelas privat dan ringkasan daftar kelas.
+     */
+    @Query("SELECT COUNT(*) FROM enrollments WHERE class_id = :classId AND status = 'ACTIVE'")
+    suspend fun countActiveEnrollmentsForClass(classId: String): Int
+
+    /**
+     * Hitung jumlah enrollment aktif milik seorang siswa.
+     */
+    @Query("SELECT COUNT(*) FROM enrollments WHERE student_id = :studentId AND status = 'ACTIVE'")
+    suspend fun countActiveEnrollmentsForStudent(studentId: String): Int
+
+    /**
+     * Hitung jumlah kelas aktif yang diampu seorang tutor.
+     */
+    @Query("SELECT COUNT(*) FROM class_groups WHERE tutor_id = :tutorId AND status = 'ACTIVE'")
+    suspend fun countActiveClassesForTutor(tutorId: String): Int
+
+    /**
+     * Cek apakah siswa sudah terdaftar aktif pada kelas tertentu.
+     */
+    @Query("""
+        SELECT COUNT(*) FROM enrollments 
+        WHERE student_id = :studentId AND class_id = :classId AND status = 'ACTIVE'
+    """)
+    suspend fun countActiveEnrollmentForStudentAndClass(studentId: String, classId: String): Int
+
+    /**
      * Ambil satu enrollment berdasarkan ID (suspend, bukan Flow).
      * Digunakan dalam @Transaction saat rekam kehadiran.
      */
