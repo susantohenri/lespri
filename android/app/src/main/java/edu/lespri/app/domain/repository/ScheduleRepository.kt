@@ -10,6 +10,7 @@ import kotlinx.coroutines.flow.Flow
  */
 interface ScheduleRepository {
     fun getAgendaSessions(startDate: String, endDate: String): Flow<List<LessonSession>>
+    fun getSessionsForClassInRange(classId: String, startDate: String, endDate: String): Flow<List<LessonSession>>
     fun getSessionDetail(sessionId: String): Flow<LessonSessionDetail?>
     suspend fun createAdHocSession(session: LessonSession): Result<Unit>
     suspend fun updateSession(session: LessonSession): Result<Unit>

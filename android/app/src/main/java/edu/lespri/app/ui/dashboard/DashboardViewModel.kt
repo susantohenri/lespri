@@ -3,13 +3,12 @@ package edu.lespri.app.ui.dashboard
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
-import edu.lespri.app.data.local.dao.AttendanceDao
-import edu.lespri.app.data.local.dao.FinanceDao
-import edu.lespri.app.data.local.dao.SettingDao
 import edu.lespri.app.domain.model.LessonSession
 import edu.lespri.app.domain.model.LespriConstants
+import edu.lespri.app.domain.repository.AttendanceRepository
 import edu.lespri.app.domain.repository.FinanceRepository
 import edu.lespri.app.domain.repository.ScheduleRepository
+import edu.lespri.app.domain.repository.SettingRepository
 import edu.lespri.app.util.DateTimeUtil
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -41,11 +40,10 @@ data class DashboardUiState(
  */
 @HiltViewModel
 class DashboardViewModel @Inject constructor(
-    private val settingDao: SettingDao,
+    private val settingRepository: SettingRepository,
     private val financeRepository: FinanceRepository,
     private val scheduleRepository: ScheduleRepository,
-    private val attendanceDao: AttendanceDao,
-    private val financeDao: FinanceDao
+    private val attendanceRepository: AttendanceRepository
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(DashboardUiState(isLoading = true))
@@ -66,11 +64,11 @@ class DashboardViewModel @Inject constructor(
 
         viewModelScope.launch {
             combine(
-                settingDao.getOwnerProfile(),
+                settingRepository.getOwnerProfile(),
                 financeRepository.getFinancialSummary(),
                 scheduleRepository.getAgendaSessions(today, today),
-                attendanceDao.countUnrecordedSessions(today),
-                financeDao.countLowBalanceEnrollments(LespriConstants.DEFAULT_LOW_SESSION_THRESHOLD)
+                attendanceRepository.countUnrecordedSessions(today),
+                financeRepository.countLowBalanceEnrollments(LespriConstants.DEFAULT_LOW_SESSION_THRESHOLD)
             ) { ownerProfile, financialSummary, sessionsToday, unrecordedCount, lowPackageCount ->
                 DashboardUiState(
                     isLoading = false,

@@ -254,6 +254,28 @@ class ClassRepositoryImpl @Inject constructor(
         }
     }
 
+    override fun getClass(id: String): Flow<ClassGroup?> {
+        return classDao.getClassById(id).map { it?.toDomain() }
+    }
+
+    override suspend fun countActiveEnrollmentsForClass(classId: String): Int {
+        return classDao.countActiveEnrollmentsForClass(classId)
+    }
+
+    override suspend fun countActiveClassesForTutor(tutorId: String): Int {
+        return classDao.countActiveClassesForTutor(tutorId)
+    }
+
+    override suspend fun countActiveEnrollmentsForStudent(studentId: String): Int {
+        return classDao.countActiveEnrollmentsForStudent(studentId)
+    }
+
+    override fun getActiveEnrollmentsForStudent(studentId: String): Flow<List<Enrollment>> {
+        return classDao.getActiveEnrollmentsForStudent(studentId).map { list ->
+            list.map { it.toDomain() }
+        }
+    }
+
     private fun getTodayIsoDate(): String {
         return SimpleDateFormat("yyyy-MM-dd", Locale.US).format(Date())
     }

@@ -12,7 +12,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.navigation.compose.rememberNavController
 import dagger.hilt.android.AndroidEntryPoint
-import edu.lespri.app.data.local.dao.SettingDao
+import edu.lespri.app.domain.model.OwnerProfile
+import edu.lespri.app.domain.repository.SettingRepository
 import edu.lespri.app.ui.navigation.LespriNavHost
 import edu.lespri.app.ui.navigation.NavRoutes
 import edu.lespri.app.ui.theme.LespriTheme
@@ -26,13 +27,13 @@ import javax.inject.Inject
 class MainActivity : ComponentActivity() {
 
     @Inject
-    lateinit var settingDao: SettingDao
+    lateinit var settingRepository: SettingRepository
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
             LespriTheme {
-                val ownerProfileState = settingDao.getOwnerProfile().collectAsState(initial = "LOADING")
+                val ownerProfileState = settingRepository.getOwnerProfile().collectAsState(initial = "LOADING")
                 val navController = rememberNavController()
 
                 when (val profile = ownerProfileState.value) {
@@ -43,7 +44,7 @@ class MainActivity : ComponentActivity() {
                         }
                     }
                     else -> {
-                        val owner = profile as? edu.lespri.app.data.local.entity.OwnerProfileEntity
+                        val owner = profile as? OwnerProfile
                         val startDestination = if (owner != null && owner.businessName.isNotBlank()) {
                             NavRoutes.Dashboard.route
                         } else {

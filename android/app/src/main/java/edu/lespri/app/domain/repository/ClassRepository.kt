@@ -16,4 +16,9 @@ interface ClassRepository {
     suspend fun archiveClass(id: String): Result<Unit>
     suspend fun enrollStudent(enrollment: Enrollment): Result<Unit>
     suspend fun removeEnrollment(enrollmentId: String): Result<Unit>
+    fun getClass(id: String): Flow<ClassGroup?>
+    suspend fun countActiveEnrollmentsForClass(classId: String): Int
+    suspend fun countActiveClassesForTutor(tutorId: String): Int
+    suspend fun countActiveEnrollmentsForStudent(studentId: String): Int
+    fun getActiveEnrollmentsForStudent(studentId: String): Flow<List<Enrollment>>
 }

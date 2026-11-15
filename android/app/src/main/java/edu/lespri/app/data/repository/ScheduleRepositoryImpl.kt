@@ -61,6 +61,12 @@ class ScheduleRepositoryImpl @Inject constructor(
         }
     }
 
+    override fun getSessionsForClassInRange(classId: String, startDate: String, endDate: String): Flow<List<LessonSession>> {
+        return scheduleDao.getSessionsForClassInRange(classId, startDate, endDate).map { list ->
+            list.map { it.toDomain() }
+        }
+    }
+
     override fun getSessionDetail(sessionId: String): Flow<LessonSessionDetail?> {
         return scheduleDao.getSessionById(sessionId).flatMapLatest { sessionEntity ->
             if (sessionEntity == null) {

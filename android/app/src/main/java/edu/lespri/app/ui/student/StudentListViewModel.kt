@@ -3,12 +3,12 @@ package edu.lespri.app.ui.student
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
-import edu.lespri.app.data.local.dao.ClassDao
-import edu.lespri.app.data.local.dao.FinanceDao
 import edu.lespri.app.domain.model.LespriConstants
 import edu.lespri.app.domain.model.Student
 import edu.lespri.app.domain.model.StudentListItem
 import edu.lespri.app.domain.model.StudentStatus
+import edu.lespri.app.domain.repository.ClassRepository
+import edu.lespri.app.domain.repository.FinanceRepository
 import edu.lespri.app.domain.repository.StudentRepository
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
@@ -45,8 +45,8 @@ data class StudentListUiState(
 @HiltViewModel
 class StudentListViewModel @Inject constructor(
     private val studentRepository: StudentRepository,
-    private val classDao: ClassDao,
-    private val financeDao: FinanceDao
+    private val classRepository: ClassRepository,
+    private val financeRepository: FinanceRepository
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(StudentListUiState(isLoading = true))
@@ -123,8 +123,8 @@ class StudentListViewModel @Inject constructor(
             name = name,
             guardianPhone = guardianPhone,
             schoolGrade = schoolGrade,
-            activeClassesCount = classDao.countActiveEnrollmentsForStudent(id),
-            totalDebt = financeDao.getOutstandingForStudent(id),
+            activeClassesCount = classRepository.countActiveEnrollmentsForStudent(id),
+            totalDebt = financeRepository.getOutstandingForStudent(id),
             status = status
         )
     }

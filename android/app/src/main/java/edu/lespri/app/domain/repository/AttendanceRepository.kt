@@ -12,4 +12,5 @@ interface AttendanceRepository {
         sessionId: String,
         records: List<AttendanceRecord>
     ): Result<Unit>
+    fun countUnrecordedSessions(todayIso: String): Flow<Int>
 }

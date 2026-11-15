@@ -4,17 +4,17 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
-import edu.lespri.app.data.local.dao.ClassDao
-import edu.lespri.app.data.local.dao.FinanceDao
-import edu.lespri.app.data.local.dao.TutorDao
 import edu.lespri.app.domain.model.BillingType
 import edu.lespri.app.domain.model.ClassType
 import edu.lespri.app.domain.model.SessionStatus
 import edu.lespri.app.domain.model.Student
 import edu.lespri.app.domain.model.StudentClassItem
 import edu.lespri.app.domain.model.StudentUpcomingSessionItem
+import edu.lespri.app.domain.repository.ClassRepository
+import edu.lespri.app.domain.repository.FinanceRepository
 import edu.lespri.app.domain.repository.ScheduleRepository
 import edu.lespri.app.domain.repository.StudentRepository
+import edu.lespri.app.domain.repository.TutorRepository
 import edu.lespri.app.util.DateTimeUtil
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -49,9 +49,9 @@ class StudentDetailViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle,
     private val studentRepository: StudentRepository,
     private val scheduleRepository: ScheduleRepository,
-    private val classDao: ClassDao,
-    private val tutorDao: TutorDao,
-    private val financeDao: FinanceDao
+    private val classRepository: ClassRepository,
+    private val tutorRepository: TutorRepository,
+    private val financeRepository: FinanceRepository
 ) : ViewModel() {
 
     private val studentId: String = checkNotNull(savedStateHandle["studentId"])
@@ -70,7 +70,7 @@ class StudentDetailViewModel @Inject constructor(
         viewModelScope.launch {
             combine(
                 studentRepository.getStudent(studentId),
-                classDao.getActiveEnrollmentsForStudent(studentId),
+                classRepository.getActiveEnrollmentsForStudent(studentId),
                 scheduleRepository.getAgendaSessions(today, endDate)
             ) { student, enrollments, sessions ->
                 Triple(student, enrollments, sessions)
@@ -96,12 +96,12 @@ class StudentDetailViewModel @Inject constructor(
                     }
 
                     val classItems = enrollments.map { enrollment ->
-                        val classEntity = classDao.getClassById(enrollment.classId).firstOrNull()
-                        val tutorName = classEntity?.tutorId?.let { tutorId ->
-                            tutorDao.getTutorById(tutorId).firstOrNull()?.name
+                        val classGroup = classRepository.getClass(enrollment.classId).firstOrNull()
+                        val tutorName = classGroup?.tutorId?.let { tutorId ->
+                            tutorRepository.getTutor(tutorId).firstOrNull()?.name
                         }
-                        val remainingSessions = if (enrollment.billingType == BillingType.PACKAGE.name) {
-                            financeDao.getRemainingSessionsSync(enrollment.id)
+                        val remainingSessions = if (enrollment.billingType == BillingType.PACKAGE) {
+                            financeRepository.getRemainingPackageSessions(enrollment.id).firstOrNull()
                         } else {
                             null
                         }
@@ -109,18 +109,14 @@ class StudentDetailViewModel @Inject constructor(
                         StudentClassItem(
                             enrollmentId = enrollment.id,
                             classId = enrollment.classId,
-                            className = classEntity?.name ?: "Kelas",
-                            classType = classEntity?.classType
-                                ?.let { runCatching { ClassType.valueOf(it) }.getOrNull() }
-                                ?: ClassType.GROUP,
-                            subject = classEntity?.subject,
+                            className = classGroup?.name ?: "Kelas",
+                            classType = classGroup?.classType ?: ClassType.GROUP,
+                            subject = classGroup?.subject,
                             tutorName = tutorName,
-                            billingType = enrollment.billingType
-                                .let { runCatching { BillingType.valueOf(it) }.getOrNull() }
-                                ?: BillingType.MONTHLY,
+                            billingType = enrollment.billingType,
                             feeAmount = enrollment.feeAmount,
                             remainingPackageSessions = remainingSessions,
-                            currentDebt = financeDao.getOutstandingForEnrollment(enrollment.id)
+                            currentDebt = financeRepository.getOutstandingForEnrollment(enrollment.id)
                         )
                     }
 

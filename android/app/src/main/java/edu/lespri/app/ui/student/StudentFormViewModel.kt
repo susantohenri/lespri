@@ -4,7 +4,6 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
-import edu.lespri.app.data.local.dao.ClassDao
 import edu.lespri.app.domain.model.BillingType
 import edu.lespri.app.domain.model.ClassGroup
 import edu.lespri.app.domain.model.Enrollment
@@ -58,8 +57,7 @@ data class StudentFormUiState(
 class StudentFormViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle,
     private val studentRepository: StudentRepository,
-    private val classRepository: ClassRepository,
-    private val classDao: ClassDao
+    private val classRepository: ClassRepository
 ) : ViewModel() {
 
     private val studentId: String? = savedStateHandle.get<String>("studentId")?.takeIf { it.isNotBlank() }
@@ -75,7 +73,7 @@ class StudentFormViewModel @Inject constructor(
         viewModelScope.launch {
             val existing = studentId?.let { studentRepository.getStudent(it).firstOrNull() }
             val enrolledClassIds = studentId?.let { id ->
-                classDao.getActiveEnrollmentsForStudent(id)
+                classRepository.getActiveEnrollmentsForStudent(id)
                     .firstOrNull()
                     ?.map { it.classId }
                     ?.toSet()

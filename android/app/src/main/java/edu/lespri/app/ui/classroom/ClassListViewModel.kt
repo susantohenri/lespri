@@ -3,14 +3,13 @@ package edu.lespri.app.ui.classroom
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
-import edu.lespri.app.data.local.dao.ClassDao
-import edu.lespri.app.data.local.dao.ScheduleDao
-import edu.lespri.app.data.local.dao.TutorDao
 import edu.lespri.app.domain.model.ClassGroup
 import edu.lespri.app.domain.model.ClassListItem
 import edu.lespri.app.domain.model.ClassType
 import edu.lespri.app.domain.model.LespriConstants
 import edu.lespri.app.domain.repository.ClassRepository
+import edu.lespri.app.domain.repository.ScheduleRepository
+import edu.lespri.app.domain.repository.TutorRepository
 import edu.lespri.app.util.DateTimeUtil
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
@@ -47,9 +46,8 @@ data class ClassListUiState(
 @HiltViewModel
 class ClassListViewModel @Inject constructor(
     private val classRepository: ClassRepository,
-    private val classDao: ClassDao,
-    private val tutorDao: TutorDao,
-    private val scheduleDao: ScheduleDao
+    private val tutorRepository: TutorRepository,
+    private val scheduleRepository: ScheduleRepository
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(ClassListUiState(isLoading = true))
@@ -123,9 +121,9 @@ class ClassListViewModel @Inject constructor(
 
     private suspend fun ClassGroup.toListItem(today: String, endDate: String): ClassListItem {
         val tutorName = tutorId?.let { id ->
-            tutorDao.getTutorById(id).firstOrNull()?.name
+            tutorRepository.getTutor(id).firstOrNull()?.name
         }
-        val nextSession = scheduleDao.getSessionsForClassInRange(id, today, endDate)
+        val nextSession = scheduleRepository.getSessionsForClassInRange(id, today, endDate)
             .firstOrNull()
             ?.firstOrNull()
 
@@ -135,7 +133,7 @@ class ClassListViewModel @Inject constructor(
             classType = classType,
             subject = subject,
             tutorName = tutorName,
-            enrolledStudentsCount = classDao.countActiveEnrollmentsForClass(id),
+            enrolledStudentsCount = classRepository.countActiveEnrollmentsForClass(id),
             nextSessionDate = nextSession?.sessionDate,
             nextSessionTime = nextSession?.startTime,
             status = status

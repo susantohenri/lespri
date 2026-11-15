@@ -118,4 +118,8 @@ class AttendanceRepositoryImpl @Inject constructor(
             }
         }
     }
+
+    override fun countUnrecordedSessions(todayIso: String): Flow<Int> {
+        return attendanceDao.countUnrecordedSessions(todayIso)
+    }
 }

@@ -3,11 +3,11 @@ package edu.lespri.app.ui.tutor
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
-import edu.lespri.app.data.local.dao.ClassDao
 import edu.lespri.app.domain.model.LespriConstants
 import edu.lespri.app.domain.model.Tutor
 import edu.lespri.app.domain.model.TutorListItem
 import edu.lespri.app.domain.model.TutorStatus
+import edu.lespri.app.domain.repository.ClassRepository
 import edu.lespri.app.domain.repository.TutorRepository
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
@@ -42,7 +42,7 @@ data class TutorListUiState(
 @HiltViewModel
 class TutorListViewModel @Inject constructor(
     private val tutorRepository: TutorRepository,
-    private val classDao: ClassDao
+    private val classRepository: ClassRepository
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(TutorListUiState(isLoading = true))
@@ -109,7 +109,7 @@ class TutorListViewModel @Inject constructor(
             name = name,
             phone = phone,
             expertise = expertise,
-            activeClassesCount = classDao.countActiveClassesForTutor(id),
+            activeClassesCount = classRepository.countActiveClassesForTutor(id),
             status = status
         )
     }

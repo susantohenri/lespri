@@ -16,4 +16,8 @@ interface FinanceRepository {
     suspend fun createCharge(charge: Charge): Result<Unit>
     suspend fun recordPayment(payment: Payment): Result<Unit>
     fun getRemainingPackageSessions(enrollmentId: String): Flow<Int>
+    suspend fun generateMonthlyCharges(targetMonth: String): Result<Int>
+    fun countLowBalanceEnrollments(threshold: Int): Flow<Int>
+    suspend fun getOutstandingForStudent(studentId: String): Long
+    suspend fun getOutstandingForEnrollment(enrollmentId: String): Long
 }

@@ -28,6 +28,8 @@ class RecordAttendanceUseCaseTest {
 
         override fun getSessionAttendance(sessionId: String): Flow<List<AttendanceRecord>> = emptyFlow()
 
+        override fun countUnrecordedSessions(todayIso: String): Flow<Int> = emptyFlow()
+
         override suspend fun submitSessionAttendance(
             sessionId: String,
             records: List<AttendanceRecord>

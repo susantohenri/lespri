@@ -3,10 +3,9 @@ package edu.lespri.app.ui.setup
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
-import edu.lespri.app.data.local.dao.SettingDao
-import edu.lespri.app.data.local.entity.AppSettingEntity
-import edu.lespri.app.data.local.entity.OwnerProfileEntity
 import edu.lespri.app.domain.model.AppSettingKey
+import edu.lespri.app.domain.model.OwnerProfile
+import edu.lespri.app.domain.repository.SettingRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -27,7 +26,7 @@ data class SetupUiState(
 
 @HiltViewModel
 class SetupViewModel @Inject constructor(
-    private val settingDao: SettingDao
+    private val settingRepository: SettingRepository
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(SetupUiState())
@@ -60,20 +59,20 @@ class SetupViewModel @Inject constructor(
             _uiState.update { it.copy(isSaving = true) }
             val now = System.currentTimeMillis()
 
-            val profile = OwnerProfileEntity(
+            val profile = OwnerProfile(
                 id = UUID.randomUUID().toString(),
                 businessName = name,
                 createdAt = now,
                 updatedAt = now
             )
-            settingDao.upsertOwnerProfile(profile)
+            settingRepository.saveOwnerProfile(profile)
 
-            settingDao.setSetting(AppSettingEntity(AppSettingKey.BIMBEL_NAME.name, name))
+            settingRepository.setSetting(AppSettingKey.BIMBEL_NAME, name)
             if (_uiState.value.ownerName.isNotBlank()) {
-                settingDao.setSetting(AppSettingEntity(AppSettingKey.OWNER_NAME.name, _uiState.value.ownerName.trim()))
+                settingRepository.setSetting(AppSettingKey.OWNER_NAME, _uiState.value.ownerName.trim())
             }
             if (_uiState.value.whatsappNumber.isNotBlank()) {
-                settingDao.setSetting(AppSettingEntity(AppSettingKey.WHATSAPP_NUMBER.name, _uiState.value.whatsappNumber.trim()))
+                settingRepository.setSetting(AppSettingKey.WHATSAPP_NUMBER, _uiState.value.whatsappNumber.trim())
             }
 
             _uiState.update { it.copy(isSaving = false, isCompleted = true) }

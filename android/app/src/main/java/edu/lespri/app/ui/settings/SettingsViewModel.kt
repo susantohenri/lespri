@@ -3,9 +3,8 @@ package edu.lespri.app.ui.settings
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
-import edu.lespri.app.data.local.dao.SettingDao
-import edu.lespri.app.data.local.entity.AppSettingEntity
 import edu.lespri.app.domain.model.AppSettingKey
+import edu.lespri.app.domain.repository.SettingRepository
 import edu.lespri.app.util.AdManager
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -33,7 +32,7 @@ data class SettingsUiState(
 
 @HiltViewModel
 class SettingsViewModel @Inject constructor(
-    private val settingDao: SettingDao,
+    private val settingRepository: SettingRepository,
     private val adManager: AdManager
 ) : ViewModel() {
 
@@ -46,11 +45,11 @@ class SettingsViewModel @Inject constructor(
 
     fun loadSettings() {
         viewModelScope.launch {
-            val bimbelsName = settingDao.getSettingSync(AppSettingKey.BIMBEL_NAME.name) ?: ""
-            val ownerName = settingDao.getSettingSync(AppSettingKey.OWNER_NAME.name) ?: ""
-            val whatsappNumber = settingDao.getSettingSync(AppSettingKey.WHATSAPP_NUMBER.name) ?: ""
-            val adsEnabled = settingDao.getSettingSync(AppSettingKey.ADS_ENABLED.name) == "true"
-            val threshold = settingDao.getSettingSync(AppSettingKey.LOW_SESSION_THRESHOLD.name) ?: "2"
+            val bimbelsName = settingRepository.getSettingSync(AppSettingKey.BIMBEL_NAME) ?: ""
+            val ownerName = settingRepository.getSettingSync(AppSettingKey.OWNER_NAME) ?: ""
+            val whatsappNumber = settingRepository.getSettingSync(AppSettingKey.WHATSAPP_NUMBER) ?: ""
+            val adsEnabled = settingRepository.getSettingSync(AppSettingKey.ADS_ENABLED) == "true"
+            val threshold = settingRepository.getSettingSync(AppSettingKey.LOW_SESSION_THRESHOLD) ?: "2"
 
             _uiState.value = SettingsUiState(
                 bimbelsName = bimbelsName,
@@ -67,11 +66,11 @@ class SettingsViewModel @Inject constructor(
         viewModelScope.launch {
             _uiState.update { it.copy(isLoading = true, errorMessage = null) }
             try {
-                settingDao.setSetting(AppSettingEntity(AppSettingKey.BIMBEL_NAME.name, state.bimbelsName))
-                settingDao.setSetting(AppSettingEntity(AppSettingKey.OWNER_NAME.name, state.ownerName))
-                settingDao.setSetting(AppSettingEntity(AppSettingKey.WHATSAPP_NUMBER.name, state.whatsappNumber))
-                settingDao.setSetting(AppSettingEntity(AppSettingKey.ADS_ENABLED.name, if (state.adsEnabled) "true" else "false"))
-                settingDao.setSetting(AppSettingEntity(AppSettingKey.LOW_SESSION_THRESHOLD.name, state.lowSessionThreshold))
+                settingRepository.setSetting(AppSettingKey.BIMBEL_NAME, state.bimbelsName)
+                settingRepository.setSetting(AppSettingKey.OWNER_NAME, state.ownerName)
+                settingRepository.setSetting(AppSettingKey.WHATSAPP_NUMBER, state.whatsappNumber)
+                settingRepository.setSetting(AppSettingKey.ADS_ENABLED, if (state.adsEnabled) "true" else "false")
+                settingRepository.setSetting(AppSettingKey.LOW_SESSION_THRESHOLD, state.lowSessionThreshold)
 
                 adManager.updateAdsEnabled(state.adsEnabled)
 
