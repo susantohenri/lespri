@@ -1,8 +1,11 @@
 # Lespri
 
 > Product Requirements Document (PRD)  
-> Status: Draft v1.0  
-> Updated: 15 November 2026
+> Status: Final Spec v1.1  
+> Updated: 15 November 2026  
+> Package Name: `edu.lespri.app`  
+> Platform: Android 7.0+ (API 24 - 36) | Kotlin & Jetpack Compose  
+> Legal & Privacy: `https://susantohenri.github.io/privacy-policy`  
 
 ## 1. Overview
 

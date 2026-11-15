@@ -1,19 +1,22 @@
 # Lespri — Product Requirements Document (PRD)
 
-> **Status:** Draft v1.0  
+> **Status:** Final MVP Spec v1.1  
 > **Tanggal:** 15 November 2026  
-> **Platform:** Android  
-> **Bahasa aplikasi:** Indonesia dan English  
+> **Platform:** Android (compileSdk 36, targetSdk 36, minSdk 24)  
+> **Application ID (Package Name):** `edu.lespri.app`  
+> **Tech Stack:** Kotlin, Jetpack Compose, Material 3, Room DB, Firebase, AdMob  
+> **Bahasa aplikasi:** Indonesia dan English (Auto-detect OS + in-app switch)  
 > **Target MVP:** Pengelola bimbel rumahan/skala kecil dengan sekitar 5–30 siswa  
-> **Model MVP:** Gratis dengan AdMob; tidak wajib registrasi; data utama disimpan lokal di perangkat.
+> **Model MVP:** Gratis dengan AdMob; tidak wajib registrasi; data utama disimpan lokal di perangkat (Room SQLite).  
+> **Privacy Policy URL:** `https://susantohenri.github.io/privacy-policy`  
 
 ---
 
 ## 1. Ringkasan Produk
 
-**Lespri** adalah aplikasi Android ringan untuk membantu pemilik/pengelola bimbel rumahan mengelola administrasi operasional harian: siswa, tutor, kelas, jadwal, kehadiran, tagihan, pembayaran, dan pengingat.
+**Lespri** adalah aplikasi Android ringan untuk membantu pemilik/pengelola bimbel rumahan mengelola administrasi operasional harian: siswa, tutor, kelas, jadwal, kehadiran, tagihan, pembayaran, dan pelaporan ringkas.
 
-Lespri ditujukan untuk bimbel kecil yang sudah berjalan dan kemungkinan memiliki data siswa di buku, Excel, atau CSV. Produk harus membuat pengelola bisa mulai menggunakan aplikasi tanpa harus membuat akun, memindahkan seluruh data secara manual, atau mempelajari sistem administrasi yang kompleks.
+Lespri ditujukan untuk bimbel kecil yang sudah berjalan dan kemungkinan memiliki data siswa di buku, Excel, atau CSV. Produk harus membuat pengelola bisa mulai menggunakan aplikasi tanpa harus memindahkan semua proses ke sistem baru atau membangun infrastruktur backend.
 
 Lespri bukan LMS, marketplace tutor, atau software ERP sekolah. Fokus utamanya adalah **administrasi bimbel yang cepat, mudah dipindai, dan tetap berjalan tanpa internet**.
 
@@ -160,7 +163,7 @@ Keputusan struktur navigasi MVP:
 
 **Hamburger drawer untuk menu sekunder:** Tutor, Laporan, Impor CSV, Ekspor Data, Backup & Restore, dan Pengaturan.
 
-Pada tablet/layar lebar, side navigation atau navigation rail menggantikan bottom navigation; keduanya tidak ditampilkan bersamaan. Detail lengkap halaman, menu, komponen bar, dan user journey ada di dokumen pendamping `lespri-screen-map.md`.
+Pada tablet/layar lebar, side navigation atau navigation rail menggantikan bottom navigation; keduanya tidak ditampilkan bersamaan. Detail lengkap halaman, menu, komponen bar, dan user journey ada di dokumen pendukung terkait.
 
 ### 5.4 Komponen visual utama
 
@@ -546,7 +549,7 @@ Template minimal:
 
 Import ditujukan untuk bimbel yang sudah memiliki data siswa di Excel/Google Sheets/CSV.
 
-**Keputusan implementasi hemat ukuran aplikasi:** MVP tidak membaca file `.xlsx` secara langsung. Pengguna membuka file Excel lalu memilih **Save As / Download as CSV UTF-8**, kemudian mengimpor file CSV tersebut ke Lespri.
+**Keputusan implementasi hemat ukuran aplikasi:** MVP tidak membaca file `.xlsx` secara langsung. Pengguna membuka file Excel lalu memilih **Save As / Download as CSV UTF-8**, kemudian mengimpor file CSV ke aplikasi.
 
 Alasan:
 
@@ -872,7 +875,7 @@ Implementasi database dapat disesuaikan dengan stack teknis, tetapi relasi domai
 7. **Sesi dibatalkan:** tidak menghasilkan biaya per sesi dan tidak mengurangi saldo paket secara otomatis.
 8. **Attendance berubah dari Hadir:** sistem membalikkan dampak paket/per sesi yang sebelumnya berasal dari attendance tersebut.
 9. **Pembayaran sebagian:** sisa tagihan harus tetap terlihat dan dapat ditagih.
-10. **Pembayaran melebihi tagihan:** MVP sebaiknya menolak nominal berlebih atau meminta pengguna mengonfirmasi sebagai saldo/kredit terpisah. Default yang direkomendasikan: tolak nominal yang melebihi saldo tagihan untuk menghindari saldo kredit yang kompleks.
+10. **Pembayaran melebihi tagihan:** MVP sebaiknya menolak nominal berlebih atau meminta pengguna mengonfirmasi sebagai saldo/kredit terpisah. Default yang direkomendasikan: tolak nominal yang melebihi tagihan.
 11. **Tagihan bulanan terbuat dua kali:** sistem harus mendeteksi enrollment dan periode yang sama agar tidak membuat duplikat.
 12. **Paket sesi habis:** tampilkan saldo nol dan CTA untuk mencatat pembelian paket baru.
 13. **Restore saat data sudah ada:** wajib menampilkan peringatan bahwa data lokal akan diganti.
@@ -880,7 +883,7 @@ Implementasi database dapat disesuaikan dengan stack teknis, tetapi relasi domai
 15. **CSV memakai titik koma:** importer harus mendeteksi delimiter atau memberi pilihan kepada pengguna.
 16. **Nama siswa sama:** jangan otomatis menganggap duplikat; gunakan kombinasi nama, wali, nomor telepon, dan/atau pilihan pengguna.
 17. **Tidak ada internet:** semua CRUD, jadwal, attendance, transaksi, export, backup, dan restore tetap berjalan.
-18. **Iklan gagal dimuat:** tidak boleh menampilkan error blocking atau menghalangi layar.
+18. **Iklan gagal dimuat:** tidak boleh menampilkan error blocking atau menghalingi layar.
 19. **Izin notifikasi ditolak:** fitur lokal tetap dapat digunakan; pengaturan menunjukkan status izin sistem.
 20. **Perangkat ganti zona waktu:** jadwal dan notifikasi harus dihitung ulang tanpa mengubah tanggal historis secara keliru.
 
@@ -940,53 +943,83 @@ Implementasi database dapat disesuaikan dengan stack teknis, tetapi relasi domai
 
 ---
 
-## 13. Monetisasi dan Ad Placement Strategy
+## 13. Monetisasi dan Ad Placement Strategy (Final MVP Specification)
 
 ### 13.1 Prinsip
 
-Lespri adalah aplikasi administrasi yang dipakai untuk tugas singkat dan berulang. Pendapatan iklan tidak boleh merusak kecepatan dan kepercayaan pengguna.
+Lespri adalah aplikasi administrasi yang dipakai untuk tugas singkat dan berulang. Pendapatan iklan tidak boleh merusak kecepatan kerja dan kenyamanan pengguna. Keputusan monetisasi memprioritaskan retensi jangka panjang dan kepatuhan penuh pada kebijakan Google AdMob & Google Play Developer Policy.
 
-### 13.2 Inventory yang mungkin diuji
+### 13.2 Keputusan Matriks Format Iklan MVP
 
-- Banner/adaptive banner.
-- Native ads.
-- Interstitial.
-- Rewarded.
-- App open.
-- Rewarded interstitial.
+Berdasarkan validasi kebutuhan pengguna dan kepatuhan kebijakan AdMob:
 
-MVP memerlukan integrasi AdMob dan struktur konfigurasi yang memungkinkan lebih dari satu ad unit/placement, tetapi **tidak mewajibkan semua format aktif pada rilis pertama**.
+| Format Iklan | Status MVP | Penempatan / Trigger | Aturan & Batasan UX |
+| :--- | :---: | :--- | :--- |
+| **Adaptive Banner** | **AKTIF** | Sticky di bagian paling bawah layar Dashboard (Beranda) dan List Siswa | Diberikan padding/safety margin minimal `16dp` dari tombol navigasi/FAB untuk mencegah *accidental clicks*. Disembunyikan saat offline. |
+| **Interstitial** | **AKTIF (Capped)** | Transisi natural setelah aksi selesai (misal: kembali ke list setelah menyimpan data siswa/jadwal/pembayaran) | **Wajib Capping:** Maksimal 1x per 3 aksi simpan berhasil DAN memiliki interval jeda minimal 180 detik antar-iklan. Dilarang muncul langsung saat tombol Simpan ditekan atau saat user menekan Back untuk exit. |
+| **App Open Ad** | **NONAKTIF** | Saat aplikasi dibuka | Dimatikan (`isAppOpenAdsEnabled: false`) agar pengguna dapat langsung mencatat data tanpa jeda. |
+| **Rewarded Ad** | **NONAKTIF** | Fitur bernilai tambah (opsional) | Dimatikan (`isRewardedAdsEnabled: false`) pada v1.0 karena belum ada tier Pro. Disiapkan untuk rilis v1.1 sebagai syarat opsional Export/Backup Laporan ke Excel/PDF. |
+| **Native Ads** | **OPSIONAL** | List item non-kritis | Siap diaktifkan via Remote Config jika rasio impresi banner kurang optimal. |
 
-### 13.3 Area yang dilarang untuk placement iklan
+### 13.3 Area yang Dilarang Keras untuk Placement Iklan
 
-- Di atas tombol Simpan/Submit.
-- Di dalam form ketika pengguna sedang mengetik.
-- Di alur catat attendance.
-- Di alur catat pembayaran atau membuat tagihan.
-- Di tengah import/export/backup/restore.
-- Tepat setelah pengguna menekan Simpan atau menyelesaikan tindakan penting.
-- Pada dialog konfirmasi atau error.
+- Di atas atau berdekatan langsung (< 16dp) dengan tombol Simpan/Submit/FAB.
+- Di dalam form ketika pengguna sedang mengetik input teks.
+- Di alur cepat pencatatan attendance (kehadiran).
+- Di alur pencatatan pembayaran atau saat membuat/membagikan rincian tagihan via WhatsApp.
+- Di tengah-tengah proses migrasi data (Import CSV / Export / Backup / Restore).
+- Pada dialog konfirmasi krusial atau dialog error/peringatan.
+- Tepat saat tombol Back ditekan untuk keluar aplikasi (melanggar AdMob Policy).
 
-### 13.4 Evaluasi format
+### 13.4 Konfigurasi Firebase Remote Config & Fallback Defaults
 
-- Mulai dari placement yang tidak mengganggu, misalnya adaptive banner pada area dashboard non-kritis.
-- Native dapat diuji pada konten informasional yang memiliki ruang dan pemisahan visual jelas.
-- Interstitial hanya boleh dipertimbangkan pada transisi natural dan tidak boleh muncul dengan frekuensi tinggi. Google menyarankan interstitial untuk titik jeda/transisi yang wajar dan memperingatkan pengalaman buruk bila iklan mengejutkan atau menghalangi pengguna.
-- Rewarded hanya masuk akal bila ada benefit opsional yang nyata; jangan membuat benefit artifisial.
-- App open bukan default karena banyak pengguna membuka aplikasi hanya untuk satu tugas singkat.
+Seluruh ID unit iklan dan toggle aktivasi dikelola secara dinamis melalui Firebase Remote Config SDK dengan fallback parameter lokal default:
 
-### 13.5 Konfigurasi teknis
+```json
+{
+  "appOpenAdUnitId": "ca-app-pub-3940256099942544/9257395921",
+  "bannerAdUnitId": "ca-app-pub-3940256099942544/6300978111",
+  "interstitialAdUnitId": "ca-app-pub-3940256099942544/1033173712",
+  "rewardedAdUnitId": "ca-app-pub-3940256099942544/5224354917",
+  "nativeAdUnitId": "ca-app-pub-3940256099942544/2247696110",
+  "isAdsEnabled": true,
+  "isBannerAdsEnabled": true,
+  "isInterstitialAdsEnabled": true,
+  "isAppOpenAdsEnabled": false,
+  "isRewardedAdsEnabled": false,
+  "interstitialFrequencyCap": 3,
+  "interstitialMinIntervalSeconds": 180
+}
+```
 
-Ad placement sebaiknya didefinisikan terpusat, misalnya:
+*Catatan:* Build testing/QA menggunakan sample AdMob App ID (`ca-app-pub-3940256099942544~3347511713`) di `AndroidManifest.xml`. Pergantian ke unit production dilakukan via parameter Firebase Console saat rilis store.
 
-- `placement_key`
-- `format`
-- `ad_unit_id`
-- `enabled`
-- `screen_context`
-- `frequency_cap` atau aturan tampil bila relevan
+### 13.5 Instrumentasi Firebase Analytics & Ad Revenue Tracking
 
-Nama field final menyesuaikan stack. Jangan menyimpan ID iklan di banyak screen. Sediakan build configuration terpisah untuk test dan production ad unit.
+1. **Singleton Logger:** Implementasikan singleton `AnalyticsLogger` yang diinisialisasi saat Application startup.
+2. **Core Event Tracking:**
+   - `first_open`, `session_start`
+   - `screen_view` (otomatis via lifecycle atau manual untuk composables)
+   - `student_created`, `session_created`, `attendance_saved`, `payment_recorded`
+   - `csv_imported`, `backup_created`, `backup_restored`
+3. **Ad Monetization Tracking:**
+   - Pasang `OnPaidEventListener` pada seluruh format iklan AdMob yang aktif.
+   - Teruskan metrik ke Firebase Analytics (`ad_impression`) beserta parameter: `value` (mikro-revenue), `currency` (USD/IDR), `precision`, `ad_unit_id`, dan `ad_platform = "AdMob"`.
+
+### 13.6 Spesifikasi Arsitektur & Teknologi (Tech Stack)
+
+| Komponen | Spesifikasi / Pilihan | Keterangan |
+| :--- | :--- | :--- |
+| **Platform Target** | Android API 36 (`compileSdk = 36`, `targetSdk = 36`) | Sesuai regulasi rilis Google Play terbaru |
+| **Minimum SDK** | Android API 24 (`minSdk = 24` / Android 7.0) | Menjangkau $\sim$95%+ perangkat aktif pengguna bimbel |
+| **Bahasa & UI Framework** | Kotlin 2.x + Jetpack Compose + Material 3 | Pola deklaratif modern, clean code, scalable |
+| **Arsitektur Kode** | MVVM / MVI + Repository Pattern | Clean separation of concerns, reactive StateFlow |
+| **Database Lokal** | Android Jetpack Room (SQLite ORM) | 100% Offline-first, fast read/write, zero server cost |
+| **Visual Direction** | Referensi TutorDesk (Wide but Clean) | Dominan Deep Slate/Navy (`#1E293B`), Accent Blue (`#2563EB`) |
+| **Konfigurasi Cloud** | Firebase Remote Config, Analytics, Crashlytics | Monitoring ANR/Crash & Dynamic Feature Toggling |
+| **Privasi & Regulasi** | Google UMP SDK (User Messaging Platform) | Menangani consent GDPR (EEA/UK) & CCPA otomatis |
+| **Identitas Paket** | `edu.lespri.app` | Terhubung dengan project Firebase `tempat-sambung` |
+| **Kebijakan Privasi** | `https://susantohenri.github.io/privacy-policy` | Wajib tercantum di menu About/Settings dan Store Listing |
 
 ---
 
@@ -1127,23 +1160,27 @@ Nama field final menyesuaikan stack. Jangan menyimpan ID iklan di banyak screen.
 
 ---
 
-## 18. Open Decisions untuk Setelah MVP
+## 18. Open Decisions & Resolved Decisions
 
-Hal-hal berikut belum perlu menghambat implementasi core MVP:
+### 18.1 Resolved for MVP (Hasil Final Diskusi)
+- [x] **AdMob Formats & Frequency:** Adaptive Banner aktif (bawah dashboard & siswa), Interstitial aktif dengan capping (1 per 3 aksi simpan & interval 180s), App Open & Rewarded nonaktif untuk v1.0.
+- [x] **Tech Stack & ID Paket:** Kotlin, Jetpack Compose, Room DB, Firebase Suite, compileSdk/targetSdk 36, Package ID `edu.lespri.app`.
+- [x] **Consent & Privacy Policy:** Menggunakan Google UMP SDK, link resmi `https://susantohenri.github.io/privacy-policy` sudah diverifikasi mencakup AdMob, Analytics, Crashlytics, dan Remote Config.
 
-1. AdMob: format yang benar-benar diaktifkan, lokasi placement, dan frekuensi.
+### 18.2 Post-MVP Considerations
+Hal-hal berikut ditunda hingga traksi pasar terbukti:
+1. Menambahkan Rewarded Ads untuk membuka fitur *Export Laporan Excel/PDF*.
 2. Apakah Story template masuk MVP pertama atau rilis minor berikutnya.
-3. Apakah perlu PDF/image invoice setelah share teks divalidasi.
-4. Apakah perlu opsi merge saat restore; MVP menggunakan replace untuk menyederhanakan konsistensi data.
-5. Apakah perlu sinkronisasi cloud dan multi-user setelah kebutuhan pasar terbukti.
-6. Apakah perlu skema honor tutor; jangan dibangun sebelum aturan pembayaran tutor tervalidasi.
-7. Apakah perlu batas gratis atau paket Pro/IAP; tidak termasuk MVP.
+3. Apakah perlu opsi merge saat restore; MVP menggunakan replace untuk menyederhanakan konsistensi data.
+4. Apakah perlu sinkronisasi cloud dan multi-user setelah kebutuhan pasar terbukti.
+5. Apakah perlu skema honor tutor; jangan dibangun sebelum aturan pembayaran tutor tervalidasi.
+6. Apakah perlu batas gratis atau paket Pro/IAP; tidak termasuk MVP.
 
 ---
 
 ## 19. Referensi Produk dan Dokumentasi
 
-- [TutorDesk – Coaching Manager di Google Play](https://play.google.com/store/apps/details?id=com.tutordesk.app) — referensi pembanding untuk pendekatan offline-first, daftar siswa/kelas, kehadiran, pembayaran, dan backup. Gunakan sebagai referensi UX/density, bukan untuk menyalin UI atau seluruh feature set.
+- [TutorDesk – Coaching Manager di Google Play](https://play.google.com/store/apps/details?id=com.tutordesk.app) — referensi pembanding untuk pendekatan offline-first, daftar siswa/kelas, kehadiran, dan jadwal.
 - [Google AdMob — Ad units, ad formats, and ad types](https://support.google.com/admob/answer/6128738) — daftar format banner, interstitial, rewarded, native, app open, dan jenis iklan.
 - [Google AdMob — Android banner ads](https://developers.google.com/admob/android/banner) — panduan banner/adaptive banner Android.
 - [Google AdMob — Interstitial ad guidance](https://support.google.com/admob/answer/6066980) — panduan penempatan interstitial pada titik jeda/transisi yang sesuai dan risiko gangguan UX.
@@ -1172,4 +1209,3 @@ MVP dapat dianggap siap diuji oleh pengguna bimbel ketika:
 - [ ] Tidak ada placement iklan pada form atau alur attendance/pembayaran/data portability.
 - [ ] Tidak ada data pribadi siswa yang dikirim sebagai custom targeting ke sistem iklan.
 - [ ] Test scenarios minimum pada bagian 16 lulus.
-
